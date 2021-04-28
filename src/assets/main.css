@@ -5,4 +5,8 @@
     text-align: center;
     color: #2c3e50;
     margin-top: 60px;
-  }
+}
+
+div.container {
+  width: min(480px, 100vw);
+}
