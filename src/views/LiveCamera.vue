@@ -1,5 +1,5 @@
 <template>
-    <video ref="player" autoplay></video>
+    <video ref="player" :srcObject="stream" autoplay></video>
     <button @click="openCamera">Open</button>
     <button @click="closeCamera">Close</button>
 </template>
@@ -7,6 +7,9 @@
 <script>
     export default {
         name: "LiveCamera",
+        data: () => ({
+            stream: null
+        }),
         methods: {
             openCamera() {
                 const player = this.$refs.player;
@@ -22,7 +25,8 @@
 
                 navigator.mediaDevices.getUserMedia(constraints)
                 .then((stream) => {
-                    player.srcObject = stream;
+                    // player.srcObject = stream;
+                    this.stream = stream;
                 })
             },
             closeCamera() {
