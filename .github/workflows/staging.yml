@@ -27,6 +27,6 @@ jobs:
       run: |
         npm ci
         npm run build
-        ./node_modules/.bin/firebase hosting:channel:deploy staging --expires 2w --project plantalk-test2704 --debug --token "$FIREBASE_TOKEN"
+        ./node_modules/.bin/firebase hosting:channel:deploy staging --expires 14d --project plantalk-test2704 --debug --token "$FIREBASE_TOKEN"
       env:
         CI: true
