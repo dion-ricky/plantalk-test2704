@@ -18,6 +18,11 @@
     "@vue/cli-plugin-pwa": "^4.5.12",
     "@vue/cli-service": "~4.5.0",
     "@vue/compiler-sfc": "^3.0.0",
-    "firebase-tools": "^9.10.0"
+    "css-loader": "^5.2.4",
+    "firebase-tools": "^9.10.0",
+    "node-sass": "^5.0.0",
+    "sass": "^1.32.12",
+    "sass-loader": "^10.1.1",
+    "vue-style-loader": "^4.1.3"
   }
 }
