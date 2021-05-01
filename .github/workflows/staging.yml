@@ -1,0 +1,32 @@
+name: Plantalk Staging CI
+
+on:
+  push:
+    branches:
+      - staging
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+    
+    strategy:
+      matrix:
+        node-version: [14.x]
+    
+    steps:
+    - uses: actions/checkout@v1
+    
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+    
+    - name: npm install, build, and test
+      run: |
+        npm ci
+        npm run build
+        ./node_modules/.bin/firebase deploy:channel:hosting staging --project plantalk-test2704 --debug --token "$FIREBASE_TOKEN"
+      env:
+        CI: true
