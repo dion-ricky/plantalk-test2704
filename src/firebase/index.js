@@ -1,7 +1,7 @@
 import firebase from 'firebase/app'
 import 'firebase/analytics'
 import 'firebase/messaging'
-import PlantalkMessaging from '../fcm'
+import PlantalkMessaging from './fcm'
 
 class PlantalkFirebase {
     // set this class to singleton
