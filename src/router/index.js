@@ -3,22 +3,33 @@ import {createRouter, createWebHistory} from 'vue-router';
 import Signin from "../views/Signin"
 import Home from "../views/Home"
 import LiveCamera from "../views/LiveCamera"
+import SplashScreen from "../views/SplashScreen"
+import Playground from "../views/Playground"
 
 const routes = [
     {
         path: '/',
-        name: 'Home',
-        component: Home
+        name: 'Splash Screen',
+        component: SplashScreen
     },
     {
         path: '/signin',
-        name: 'Signin',
+        name: "Signin",
         component: Signin
     },
     {
-        path: '/live',
-        name: 'Live Camera',
-        component: LiveCamera
+        path: '/play',
+        name: "Playground",
+        component: Playground
+    },
+    {
+        path: '/home',
+        name: 'Home',
+        component: Home,
+        children: [{
+            path: '/live',
+            component: LiveCamera
+        }]
     },
     {
         path: '/:catchAll(.*)',
