@@ -5,7 +5,6 @@
         :value="textInput"
         @input="$emit('update:textInput', $event.target.value)"
         @focus="toggleFocus" @blur="toggleFocus">
-    <!-- Setiap onChange emit -->
 </div>
 </template>
 
@@ -36,10 +35,10 @@ export default {
         display: block;
         transition: color .2s ease;
         margin-bottom: .5rem;
-        color: rgba(0,0,0,.6);
+        color: $onsurface-medium;
 
         &.focus {
-            color: #D1A365;
+            color: $input-focus;
         }
     }
 
@@ -55,6 +54,7 @@ export default {
         font-family: $body-font-stack;
         font-weight: 500;
         font-size: 14px;
+        width: 100%;
 
         border-color: rgba(0,0,0,.12);
         border-width: 2px;
@@ -64,7 +64,7 @@ export default {
         transition: border-color .2s ease;
 
         &:focus {
-            border-color: #D1A36580;
+            border-color: $input-focus-border;
         }
     }
 </style>
