@@ -5,7 +5,7 @@
                 <img src="../assets/plantalk/plantalk-logo.png" class="plantalk-logo" alt="" srcset="">
                 <h1>PlanTalk</h1>
                 <h2 style="margin-top: 2rem">Let's garden and take care of your mental health</h2>
-                <PlantalkButton text="Mulai" variant="primary" style="width: min(300px, 80%); margin-top: 3rem"/>
+                <PlantalkButton @click="toSignin" text="Mulai" variant="primary" style="width: min(300px, 80%); margin-top: 3rem"/>
             </div>
             <div class="center pbush-wrapper">
                 <img src="../assets/plantalk/plantalk-bushes.png" class="plantalk-bushes">
@@ -21,6 +21,11 @@ export default {
     name: "SplashScreen",
     components: {
         PlantalkButton
+    },
+    methods: {
+        toSignin() {
+            this.$router.push({name: "Login"});
+        }
     }
 }
 </script>
