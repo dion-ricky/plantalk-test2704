@@ -11,7 +11,6 @@
 </template>
 
 <script>
-import PlantalkFirebase from "./firebase";
 import ActionToast from "./components/Plantalk/ActionToast";
 
 export default {
@@ -24,35 +23,30 @@ export default {
 	  registration: null
   }),
   methods: {
-    requestNotification() {
-      const messaging = PlantalkFirebase.getMessaging();
-      messaging.requestNotification();
-    },
     invokeServiceWorkerUpdateFlow(registration) {
 		this.registration = registration;
 		this.isUpdateAvailable = true;
 	},
 	updateServiceWorker() {
 		const registration = this.registration;
-
+		
 		if (registration.waiting) {
 			// let waiting Service Worker know it should became active
-			registration.waiting.postMessage('SKIP_WAITING')
+			registration.waiting.postMessage({type: "SKIP_WAITING"})
 		}
 	}
   },
   created() {
-    const messaging = PlantalkFirebase.getMessaging();
-    messaging.setOnMessageHandler((payload) => {
-      console.log(payload);
-    });
-
     // check if the browser supports serviceWorker at all
     if ('serviceWorker' in navigator) {
 		let _this = this;
 
 		navigator.serviceWorker.getRegistrations().then((regs) => {
-			registration = regs[0];
+			let registration = regs[0];
+
+			if (!registration) {
+				return;
+			}
 
 			// ensure the case when the updatefound event was missed is also handled
             // by re-invoking the prompt when there's a waiting Service Worker
