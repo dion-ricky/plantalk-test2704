@@ -1,3 +1,9 @@
+self.addEventListener('message', (event) => {
+  if (event.data === 'SKIP_WAITING') {
+      self.skipWaiting();
+  }
+});
+
 // Give the service worker access to Firebase Messaging.
 // Note that you can only use Firebase Messaging here. Other Firebase libraries
 // are not available in the service worker.
@@ -24,7 +30,7 @@ const messaging = firebase.messaging();
 messaging.onBackgroundMessage((payload) => {
     console.log('[firebase-messaging-sw.js] Received background message ', payload);
     // Customize notification here
-    const notificationTitle = 'Background Message Title';
+    const notificationTitle = 'Background ajahxhjjkq Title';
     const notificationOptions = {
       body: 'Background Message body.',
     };
