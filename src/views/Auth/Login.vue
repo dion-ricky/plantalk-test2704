@@ -3,12 +3,12 @@
         <PlantalkAuthHeader title="Welcome Back" />
         <div class="auth-form">
             <div class="auth-form-wrapper">
-                <PlantalkTextInput label="Email" v-model:textInput="email" />
-                <PlantalkPasswordInput label="Password" v-model:passwordInput="password" />
+                <TextInput label="Email" v-model:textInput="email" />
+                <PasswordInput label="Password" v-model:passwordInput="password" />
                 <div>
                     <a href="" class="a-fp">Forgot Password?</a>
                 </div>
-                <PlantalkButton text="Log in" variant="primary" />
+                <Button text="Log in" variant="primary" @click="toHome" />
                 <p class="muted">Doesn't have an account? <a @click="$router.push('/signup')" class="a-ca">Create account</a></p>
             </div>
         </div>
@@ -17,22 +17,27 @@
 
 <script>
     import PlantalkAuthHeader from "../../components/Plantalk/AuthHeader";
-    import PlantalkTextInput from "../../components/Plantalk/TextInput";
-    import PlantalkPasswordInput from "../../components/Plantalk/PasswordInput";
-    import PlantalkButton from "../../components/Plantalk/Button";
+    import TextInput from "../../components/Plantalk/TextInput";
+    import PasswordInput from "../../components/Plantalk/PasswordInput";
+    import Button from "../../components/Plantalk/Button";
 
     export default {
         name: "Login",
         components: {
             PlantalkAuthHeader,
-            PlantalkTextInput,
-            PlantalkPasswordInput,
-            PlantalkButton
+            TextInput,
+            PasswordInput,
+            Button
         },
         data: () => ({
             email: '',
             password: ''
-        })
+        }),
+        methods: {
+            toHome() {
+                this.$router.push({name: 'home'})
+            }
+        }
     }
 </script>
 

@@ -1,37 +1,41 @@
 <template>
-    <h3>Playground</h3>
-    <PlantalkTextInput label="Email" v-model:textInput="email"  />
-    <p>{{ email }}</p>
-    <PlantalkPasswordInput label="Password" v-model:passwordInput="password" />
-    <p>{{ password }}</p>
+    <div class="wrapper">
 
-    <ActionToast message="New version is available" action="Update" @toast:action-clicked="log" />
+        <Reticle width="250px" height="250px" :state="state" />
+        <div>
+            <button @click="state = 'sensing'">Sensing</button>
+            <button @click="state = 'error'">Error</button>
+            <button @click="state = 'loading'">Loading</button>
+            <button @click="state = 'move-closer'">Move Closer</button>
+        </div>
+    </div>
 </template>
 
 <script>
-import PlantalkTextInput from "../components/Plantalk/TextInput"
-import PlantalkPasswordInput from "../components/Plantalk/PasswordInput";
-import ActionToast from "../components/Plantalk/ActionToast";
+import Reticle from "../assets/plantalk/scanner/reticle"
 
 export default {
     name: "Playground",
     components: {
-        PlantalkTextInput,
-        PlantalkPasswordInput,
-        ActionToast
-    },
-    methods: {
-        log(v) {``
-            console.log(v);
-        }
+        Reticle
     },
     data: () => ({
-        email: '',
-        password: ''
-    })
+        state: 'sensing'
+    }),
+    methods: {
+        
+    }
 }
 </script>
 
-<style>
-
+<style lang="scss" scoped>
+    .wrapper {
+        width: 100vw;
+        height: 100vh;
+        background-color: black;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+    }
 </style>

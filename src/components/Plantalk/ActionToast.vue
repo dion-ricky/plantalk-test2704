@@ -59,5 +59,6 @@ export default {
 
     .message-wrapper {
         color: $onsurface-medium;
+        font-family: $body-font-stack;
     }
 </style>

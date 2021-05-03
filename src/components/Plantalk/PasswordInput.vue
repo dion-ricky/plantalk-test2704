@@ -15,7 +15,7 @@
 
 <script>
 export default {
-    name: "PlantalkPasswordInput",
+    name: "PasswordInput",
     data: () => ({
         isOnFocus: false,
         isVisible: false,

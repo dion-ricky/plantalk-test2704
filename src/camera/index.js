@@ -22,7 +22,7 @@ class PlantalkCamera {
             .then((mediaStream) => {
                 // player.srcObject = stream;
                 // this.mediaStream = mediaStream;
-                console.log(mediaStream);
+                // console.log(mediaStream);
                 this.activeMediaStream = mediaStream;
                 res(mediaStream)
             })

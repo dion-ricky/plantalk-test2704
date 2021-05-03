@@ -1,10 +1,17 @@
 import {createRouter, createWebHistory} from 'vue-router';
 
+import SplashScreen from "../views/SplashScreen"
+import MainApp from "../views/MainApp"
+
 import Login from "../views/Auth/Login"
 import Signup from "../views/Auth/Signup"
+
 import Home from "../views/Home"
-import LiveCamera from "../views/LiveCamera"
-import SplashScreen from "../views/SplashScreen"
+import MyPlant from "../views/MyPlant"
+import Scanner from "../views/Scanner"
+import Chat from "../views/Chat"
+import Market from "../views/Market"
+
 import Playground from "../views/Playground"
 
 const routes = [
@@ -29,18 +36,40 @@ const routes = [
         component: Playground
     },
     {
-        path: '/home',
-        name: 'Home',
-        component: Home,
+        path: '/app',
+        name: 'MainApp',
+        component: MainApp,
         children: [{
-            path: '/live',
-            component: LiveCamera
+            path: 'home',
+            name: 'home',
+            alias: '/app',
+            component: Home
+        },
+        {
+            path: 'myplant',
+            name: 'myplant',
+            component: MyPlant
+        },
+        {
+            path: 'chat',
+            name: 'chat',
+            component: Chat
+        },
+        {
+            path: 'market',
+            name: 'market',
+            component: Market
         }]
+    },
+    {
+        path: '/app/scan',
+        name: 'scan',
+        component: Scanner
     },
     {
         path: '/:catchAll(.*)',
         name: '404',
-        component: Home
+        component: Playground
     }
 ]
 

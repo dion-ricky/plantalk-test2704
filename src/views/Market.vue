@@ -1,10 +1,10 @@
 <template>
-  HOME
+    Market
 </template>
 
 <script>
 export default {
-
+    name: "Market"
 }
 </script>
 

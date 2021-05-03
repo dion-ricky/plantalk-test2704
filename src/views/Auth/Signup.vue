@@ -3,11 +3,11 @@
         <PlantalkAuthHeader title="Create Account" />
         <div class="auth-form">
             <div class="auth-form-wrapper">
-                <PlantalkTextInput label="Name" v-model:textInput="name" />
-                <PlantalkTextInput label="Email" v-model:textInput="email" />
-                <PlantalkPasswordInput label="Password" v-model:passwordInput="password" />
-                <PlantalkButton text="Create Account" variant="primary" />
-                <p class="muted">Already have an account? <a @click="$router.push('/login')" class="a-ca">Log in</a></p>
+                <TextInput label="Name" v-model:textInput="name" />
+                <TextInput label="Email" v-model:textInput="email" />
+                <PasswordInput label="Password" v-model:passwordInput="password" />
+                <Button text="Create Account" variant="primary" />
+                <p class="muted">Already have an account?<br><a @click="$router.push('/login')" class="a-ca">Log in</a></p>
             </div>
         </div>
     </div>
@@ -15,17 +15,17 @@
 
 <script>
     import PlantalkAuthHeader from "../../components/Plantalk/AuthHeader";
-    import PlantalkTextInput from "../../components/Plantalk/TextInput";
-    import PlantalkPasswordInput from "../../components/Plantalk/PasswordInput";
-    import PlantalkButton from "../../components/Plantalk/Button";
+    import TextInput from "../../components/Plantalk/TextInput";
+    import PasswordInput from "../../components/Plantalk/PasswordInput";
+    import Button from "../../components/Plantalk/Button";
 
     export default {
         name: "Signup",
         components: {
             PlantalkAuthHeader,
-            PlantalkTextInput,
-            PlantalkPasswordInput,
-            PlantalkButton
+            TextInput,
+            PasswordInput,
+            Button
         },
         data: () => ({
             name: '',

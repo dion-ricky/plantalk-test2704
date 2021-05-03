@@ -91,7 +91,5 @@ export default {
 div.container {
 	width: 100vw;
 	height: 100vh;
-	// position: absolute;
-	// z-index: 1;
 }
 </style>
