@@ -7,7 +7,7 @@
                 </p>
             </div>
             <div class="action-wrapper">
-                <PlantalkButton @click="emit" :text="action" variant="text-info" />
+                <PlantalkButton @click="clicked" :text="action" variant="text-info" />
             </div>
         </div>
     </div>
@@ -22,7 +22,7 @@ export default {
         PlantalkButton
     },
     methods: {
-        emit(e) {
+        clicked(e) {
             this.$emit('toast:action-clicked', e);
         }
     },
