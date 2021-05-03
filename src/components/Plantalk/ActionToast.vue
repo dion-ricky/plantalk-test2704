@@ -50,6 +50,7 @@ export default {
         justify-content: center;
         align-items: center;
         border-radius: 5px;
+        background-color: white;
 
         box-shadow: 0px -1px 10px 2px rgba(0,0,0,0.15);
         -webkit-box-shadow: 0px -1px 10px 2px rgba(0,0,0,0.15);
