@@ -10,7 +10,7 @@
 
 <script>
 export default {
-    name: "PlantalkTextInput",
+    name: "TextInput",
     data: () => ({
         isOnFocus: false
     }),
