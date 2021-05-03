@@ -48,5 +48,9 @@ export default {
             background-color: $primary;
             color: #ffffff;
         }
+
+        .text-info {
+            color: $primary;
+        }
     }
 </style>
