@@ -17,7 +17,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '../../assets/theme.scss';
+@import '../assets/theme.scss';
 
     div {
         .button {

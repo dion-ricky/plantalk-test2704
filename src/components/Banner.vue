@@ -19,9 +19,11 @@ export default {
         border-radius: 12px;
         cursor: pointer;
 
+        width: min(640px, 100%);
+
         background-color: white;
         box-shadow: 0px 16px 50px 0px rgba(0, 0, 0, 0.05);
-        -webkit-box-shadow: 16px 0px 50px 0px rgba(0, 0, 0, 0.05);
+        -webkit-box-shadow: 0px 16px 50px 0px rgba(0, 0, 0, 0.05);
         -moz-box-shadow: 0px 16px 50px 0px rgba(0, 0, 0, 0.05);
 
         -webkit-tap-highlight-color: transparent;

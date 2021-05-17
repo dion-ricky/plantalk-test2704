@@ -16,7 +16,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import "../../../assets/theme.scss";
+@import "../../assets/theme.scss";
 
 .fixed {
     position: fixed;
@@ -29,6 +29,7 @@ export default {
     display: flex;
     justify-content: space-around;
     align-items: center;
+    padding: 0 1rem;
 
     background-color: white;
     box-shadow: 0px 0px 50px 5px rgba(0, 0, 0, 0.08);
