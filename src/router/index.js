@@ -10,7 +10,12 @@ import Home from "../views/Home"
 import MyPlant from "../views/MyPlant"
 import MyPlantDetail from "../views/MyPlantDetail"
 import Scanner from "../views/Scanner"
-import Chat from "../views/Chat"
+
+import Chat from "../views/Chat/Chat"
+import CommunityChat from "../views/Chat/Community"
+import ExpertChat from "../views/Chat/Expert"
+import ChatRoom from "../views/Chat/ChatRoom"
+
 import Market from "../views/Market"
 
 import Playground from "../views/Playground"
@@ -54,7 +59,17 @@ const routes = [
         {
             path: 'chat',
             name: 'chat',
-            component: Chat
+            component: Chat,
+            children: [{
+                path: 'community',
+                name: 'chat.community',
+                component: CommunityChat
+            },
+            {
+                path: 'expert',
+                name: 'chat.expert',
+                component: ExpertChat
+            }]
         },
         {
             path: 'market',
@@ -71,6 +86,11 @@ const routes = [
         path: '/app/myplant/detail',
         name: 'myplantdetail',
         component: MyPlantDetail
+    },
+    {
+        path: '/app/chat/room',
+        name: 'chatroom',
+        component: ChatRoom
     },
     {
         path: '/:catchAll(.*)',

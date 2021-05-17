@@ -12,6 +12,7 @@
                 category="Indoor Plant"
                 nextWatering="20 May"
                 needFertilizer="Fertilizer"
+                @click="$router.push({name: 'myplantdetail'})"
                 />
         </div>
         <floating-action-button iconType="add" />

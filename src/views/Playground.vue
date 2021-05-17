@@ -6,7 +6,7 @@
       {{ lastXY }}
       <br />
       <button @click="toBinary">To Binary</button>
-      <button @click="toggleBinary">Stop</button>
+      <button @click="toggleBinary">{{ stopFlag ? "Continue" : "Stop" }}</button>
     </div>
     <br />
   </div>
@@ -306,7 +306,7 @@ export default {
           let lastXYSaliency = getNeighborSalient(lastX, lastY)
           if (lastXYSaliency && lastXYSaliency.nsRatio >= neighborSaliencyThreshold || iterCount > maxIter)
             return {
-              salientXY: lastXY,
+              salientXY: lastXYSaliency,
               bbox: {
                 minX,
                 minY,

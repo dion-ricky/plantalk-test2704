@@ -30,7 +30,9 @@
             </template>
         </NavigationItem>
         <NavigationItem navId="chat"
-            :currentActive="currentActive" @navitem:click="navClicked">
+            :currentActive="currentActive"
+
+            @navitem:click="navClicked">
             <template v-slot:nav-default>
                 <ChatIconOutline/>
             </template>
@@ -99,7 +101,7 @@ export default {
         let currentPath = this.$route.path
         let currentRoute = this.$router.getRoutes().filter(route => route.path === currentPath)[0]
 
-        this.currentActive = currentRoute.name
+        this.currentActive = currentRoute.name.substring(0, currentRoute.name.indexOf("."))
     }
 }
 </script>
