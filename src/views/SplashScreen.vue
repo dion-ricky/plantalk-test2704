@@ -15,7 +15,7 @@
 </template>
 
 <script>
-import Button from "../components/Plantalk/Button"
+import Button from "../components/Button"
 
 export default {
     name: "SplashScreen",

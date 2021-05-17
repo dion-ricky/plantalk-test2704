@@ -2,11 +2,11 @@
     <div class="header">
         <div class="header-wrapper">
             <div class="logo-title">
-                <img src="../../assets/plantalk/plantalk-logo.png" alt="" srcset="">
+                <img src="../assets/plantalk/plantalk-logo.png" alt="" srcset="">
                 <h2>{{ title }}</h2>
             </div>
             <div class="ornament">
-                <img src="../../assets/plantalk/plantalk-bg-ornament.png" alt="" srcset="">
+                <img src="../assets/plantalk/plantalk-bg-ornament.png" alt="" srcset="">
             </div>
         </div>
     </div>
@@ -22,7 +22,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-    @import "../../assets/theme.scss";
+    @import "../assets/theme.scss";
 
     .header {
         background-color: $main-bg-color;
