@@ -52,8 +52,8 @@
 </template>
 
 <script>
-import BottomNav from "../components/Plantalk/Navigation/BottomNav"
-import NavigationItem from "../components/Plantalk/Navigation/NavigationItem"
+import BottomNav from "../components/Navigation/BottomNav"
+import NavigationItem from "../components/Navigation/NavigationItem"
 
 import HomeIconOutline from "../assets/plantalk/nav-icon/home-outline-navitem"
 import HomeIconFilled from "../assets/plantalk/nav-icon/home-filled-navitem"

@@ -11,7 +11,7 @@
 </template>
 
 <script>
-import ActionToast from "./components/Plantalk/ActionToast";
+import ActionToast from "./components/ActionToast";
 
 export default {
   name: "App",
@@ -89,7 +89,7 @@ export default {
 
 <style lang="scss" scoped>
 div.container {
-	width: 100vw;
+	// width: 100vw;
 	height: 100vh;
 }
 </style>

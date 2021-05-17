@@ -25,7 +25,7 @@
 </template>
 
 <script>
-import IconButton from "../components/Plantalk/IconButton"
+import IconButton from "../components/IconButton"
 
 import CaptureIcon from "../assets/plantalk/scanner/capture-icon"
 import CloseIcon from "../assets/plantalk/scanner/close-icon"
