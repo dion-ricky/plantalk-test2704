@@ -11,7 +11,8 @@ class PlantalkCamera {
     getUserMediaStream(c) {
         const constraints = c ? c : {
             video: {
-                facingMode: "environment"
+                facingMode: "environment",
+                height: { ideal: 720 }
             }
             // configure video dimensions here as well
             // https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia
@@ -22,7 +23,7 @@ class PlantalkCamera {
             .then((mediaStream) => {
                 // player.srcObject = stream;
                 // this.mediaStream = mediaStream;
-                console.log(mediaStream);
+                // console.log(mediaStream);
                 this.activeMediaStream = mediaStream;
                 res(mediaStream)
             })

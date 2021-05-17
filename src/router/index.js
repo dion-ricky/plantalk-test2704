@@ -1,29 +1,81 @@
 import {createRouter, createWebHistory} from 'vue-router';
 
-import Signin from "../views/Signin"
+import SplashScreen from "../views/SplashScreen"
+import MainApp from "../views/MainApp"
+
+import Login from "../views/Auth/Login"
+import Signup from "../views/Auth/Signup"
+
 import Home from "../views/Home"
-import LiveCamera from "../views/LiveCamera"
+import MyPlant from "../views/MyPlant"
+import MyPlantDetail from "../views/MyPlantDetail"
+import Scanner from "../views/Scanner"
+import Chat from "../views/Chat"
+import Market from "../views/Market"
+
+import Playground from "../views/Playground"
 
 const routes = [
     {
         path: '/',
-        name: 'Home',
-        component: Home
+        name: 'Splash Screen',
+        component: SplashScreen
     },
     {
-        path: '/signin',
-        name: 'Signin',
-        component: Signin
+        path: '/login',
+        name: "Login",
+        component: Login
     },
     {
-        path: '/live',
-        name: 'Live Camera',
-        component: LiveCamera
+        path: '/signup',
+        name: "Signup",
+        component: Signup
+    },
+    {
+        path: '/play',
+        name: "Playground",
+        component: Playground
+    },
+    {
+        path: '/app',
+        name: 'MainApp',
+        component: MainApp,
+        children: [{
+            path: 'home',
+            name: 'home',
+            alias: '/app',
+            component: Home
+        },
+        {
+            path: 'myplant',
+            name: 'myplant',
+            component: MyPlant
+        },
+        {
+            path: 'chat',
+            name: 'chat',
+            component: Chat
+        },
+        {
+            path: 'market',
+            name: 'market',
+            component: Market
+        }]
+    },
+    {
+        path: '/app/scan',
+        name: 'scan',
+        component: Scanner
+    },
+    {
+        path: '/app/myplant/detail',
+        name: 'myplantdetail',
+        component: MyPlantDetail
     },
     {
         path: '/:catchAll(.*)',
         name: '404',
-        component: Home
+        component: Playground
     }
 ]
 
