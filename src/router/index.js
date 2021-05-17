@@ -8,6 +8,7 @@ import Signup from "../views/Auth/Signup"
 
 import Home from "../views/Home"
 import MyPlant from "../views/MyPlant"
+import MyPlantDetail from "../views/MyPlantDetail"
 import Scanner from "../views/Scanner"
 import Chat from "../views/Chat"
 import Market from "../views/Market"
@@ -65,6 +66,11 @@ const routes = [
         path: '/app/scan',
         name: 'scan',
         component: Scanner
+    },
+    {
+        path: '/app/myplant/detail',
+        name: 'myplantdetail',
+        component: MyPlantDetail
     },
     {
         path: '/:catchAll(.*)',
