@@ -1,7 +1,10 @@
 import firebase from 'firebase/app'
 import 'firebase/analytics'
 import 'firebase/messaging'
+import 'firebase/auth'
+import 'firebase/database'
 import PlantalkMessaging from './fcm'
+import PlantalkAuth from './auth'
 
 class PlantalkFirebase {
     // set this class to singleton
@@ -30,6 +33,19 @@ class PlantalkFirebase {
         return this.messaging
     }
 
+    getAuth() {
+        return this.auth ? this.auth : this.initAuth()
+    }
+
+    initAuth() {
+        this.auth = new PlantalkAuth(firebase)
+        return this.auth
+    }
+
+    getDb() {
+        this.db = this.db ? this.db : firebase.database()
+        return this.db
+    }
 }
 
 export default new PlantalkFirebase();
