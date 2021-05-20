@@ -41,16 +41,22 @@ export default {
                         name: 'chat.expert'
                     })
             }
+        },
+        defaultRedirect() {
+            let currentPath = this.$route.path
+            let currentRoute = this.$router.getRoutes().filter(route => route.path === currentPath)[0]
+            
+            if (currentRoute.name === 'chat') {
+                this.$router.push({name: 'chat.community'})
+                this.chatTabActive = 'Community'
+            }
         }
     },
     created() {
-        let currentPath = this.$route.path
-        let currentRoute = this.$router.getRoutes().filter(route => route.path === currentPath)[0]
-        
-        if (currentRoute.name === 'chat') {
-            this.$router.push({name: 'communitychat'})
-            this.chatTabActive = 'Community'
-        }
+        this.defaultRedirect()
+    },
+    updated() {
+        this.defaultRedirect()
     }
 }
 </script>

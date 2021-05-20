@@ -12,6 +12,7 @@
 
 <script>
 import ActionToast from "./components/ActionToast";
+import PlantalkFirebase from "./firebase";
 
 export default {
   name: "App",

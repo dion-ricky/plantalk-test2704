@@ -92,16 +92,21 @@ export default {
         },
         navigateTo(routeName) {
             this.$router.push({name: routeName});
+        },
+        setActiveNavItem() {
+            // Set current active navigation item
+            // by inferring from path
+            let currentPath = this.$route.path
+            let currentRoute = this.$router.getRoutes().filter(route => route.path === currentPath)[0]
+
+            let l = currentRoute.name.indexOf(".")
+            l = l === -1 ? currentRoute.name.length : l
+            
+            this.currentActive = currentRoute.name.substring(0, l)
         }
     },
     created() {
-
-        // Set current active navigation item
-        // by inferring from path
-        let currentPath = this.$route.path
-        let currentRoute = this.$router.getRoutes().filter(route => route.path === currentPath)[0]
-
-        this.currentActive = currentRoute.name.substring(0, currentRoute.name.indexOf("."))
+        this.setActiveNavItem()
     }
 }
 </script>
