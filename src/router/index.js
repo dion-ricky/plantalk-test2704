@@ -7,18 +7,19 @@ import Login from "../views/Auth/Login"
 import Signup from "../views/Auth/Signup"
 
 import Home from "../views/Home"
-import MyPlant from "../views/MyPlant"
-import MyPlantDetail from "../views/MyPlantDetail"
-import Scanner from "../views/Scanner"
+import MyPlant from "../views/MyPlant/MyPlant"
+import MyPlantDetail from "../views/MyPlant/MyPlantDetail"
+import Scanner from "../views/Scanner/Scanner"
 
 import Chat from "../views/Chat/Chat"
 import CommunityChat from "../views/Chat/Community"
 import ExpertChat from "../views/Chat/Expert"
 import ChatRoom from "../views/Chat/ChatRoom"
 
-import Market from "../views/Market"
+import Market from "../views/Market/Market"
+import PlantDetail from "../views/Market/PlantDetail"
 
-import Playground from "../views/Playground"
+import Playground from "../views/dev/Playground"
 
 const routes = [
     {
@@ -91,6 +92,11 @@ const routes = [
         path: '/app/chat/room',
         name: 'chatroom',
         component: ChatRoom
+    },
+    {
+        path: '/app/plant/detail',
+        name: 'plantdetail',
+        component: PlantDetail
     },
     {
         path: '/:catchAll(.*)',

@@ -1,14 +1,31 @@
 <template>
   <div class="wrapper-pg">
-    <canvas @click="userAssist" ref="canvas" class="red"></canvas>
+    <canvas ref="canvas" class="red"></canvas>
     <video ref="video" :srcObject="stream" autoplay></video>
     <div>
       {{ lastXY }}
       <br />
       <button @click="toBinary">To Binary</button>
-      <button @click="toggleBinary">{{ stopFlag ? "Continue" : "Stop" }}</button>
+      <button @click="toggleBinary">Stop</button>
     </div>
     <br />
+    <!-- <canvas ref="grayscale"></canvas>
+    <canvas ref="binary"></canvas> -->
+    <!-- <swiper
+            :slides-per-view="1"
+            :space-between="50"
+        >
+            <swiper-slide>
+                <Banner
+                    imgSrc="https://firebasestorage.googleapis.com/v0/b/plantalk-test2704.appspot.com/o/promotional%2Fbanner%2Fbnr_anti-stress-tips.png?alt=media&token=0eb7bad3-89ba-414b-8370-c8ac6ed07508"
+                />
+            </swiper-slide>
+            <swiper-slide>
+                <Banner
+                    imgSrc="https://firebasestorage.googleapis.com/v0/b/plantalk-test2704.appspot.com/o/promotional%2Fbanner%2Fbnr_anti-stress-tips.png?alt=media&token=0eb7bad3-89ba-414b-8370-c8ac6ed07508"
+                />
+            </swiper-slide>
+        </swiper> -->
   </div>
 
   <!-- <Reticle width="250px" height="250px" :state="state" />
@@ -21,15 +38,23 @@
 </template>
 
 <script>
-import PlantalkCamera from "../camera";
-import Reticle from "../assets/plantalk/scanner/reticle";
+import PlantalkCamera from "../../camera";
+import Reticle from "../../assets/plantalk/scanner/reticle";
+import Banner from "../../components/Banner";
+
+import { Swiper, SwiperSlide } from "swiper/vue";
+import "swiper/swiper.scss";
 
 export default {
   name: "Playground",
   components: {
     Reticle,
+    Banner,
+    Swiper,
+    SwiperSlide,
   },
   data: () => ({
+    state: "sensing",
     stream: null,
     binarizerWorker: null,
     stopFlag: false,
@@ -37,22 +62,11 @@ export default {
     lastXY: null
   }),
   methods: {
-    userAssist(e) {
-      let elWidth = e.target.clientWidth
-      let elHeight = e.target.clientHeight
-      
-      let canvasWidth = e.target.width
-      let canvasHeight = e.target.height
-
-      let posX = e.layerX
-      let posY = e.layerY
-
-      this.lastXY = {
-        x: Math.round(posX * (canvasWidth / elWidth)),
-        y: Math.round(posY * (canvasHeight / elHeight))
-      }
-
-      // console.log(e)
+    onSwiper(swiper) {
+      console.log(swiper);
+    },
+    onSlideChange() {
+      console.log("slide change");
     },
     toggleBinary() {
       this.stopFlag = !this.stopFlag
@@ -100,22 +114,22 @@ export default {
         this.inferXYReticlePos(e)
 
         // console.log(e.data['totalTime']);
-        // const grayscaleImage = e.data['grayscale']
-        // const binaryImage = e.data['binary']
+        const grayscaleImage = e.data['grayscale']
+        const binaryImage = e.data['binary']
 
-        // const grayscaleCanvas = this.$refs.grayscale;
-        // grayscaleCanvas.width = imageWidth;
-        // grayscaleCanvas.height = imageHeight;
-        // grayscaleCanvas
-        //   .getContext("2d")
-        //   .putImageData(grayscaleImage, 0, 0);
+        const grayscaleCanvas = this.$refs.grayscale;
+        grayscaleCanvas.width = imageWidth;
+        grayscaleCanvas.height = imageHeight;
+        grayscaleCanvas
+          .getContext("2d")
+          .putImageData(grayscaleImage, 0, 0);
         
-        // const binaryCanvas = this.$refs.binary;
-        // binaryCanvas.width = imageWidth;
-        // binaryCanvas.height = imageHeight;
-        // binaryCanvas
-        //   .getContext("2d")
-        //   .putImageData(binaryImage, 0, 0);
+        const binaryCanvas = this.$refs.binary;
+        binaryCanvas.width = imageWidth;
+        binaryCanvas.height = imageHeight;
+        binaryCanvas
+          .getContext("2d")
+          .putImageData(binaryImage, 0, 0);
         
         this.toBinary()
       }
@@ -150,6 +164,11 @@ export default {
       canvas.width = width
       canvas.height = height
 
+      const lastXY = (this.lastXY ? this.lastXY :
+                      {x: Math.round(width / 2), y: Math.round(height / 2)} )
+      const lastX = lastXY['x'] 
+      const lastY = lastXY['y']
+
       const keepInsideBoundary = (x, w) => {
         // w - 1 to prevent x to exactly match the boundary
         // x can go negative or go beyond w (limit)
@@ -160,8 +179,7 @@ export default {
         if (x !== null && x < 0) {
           newX = 0
           moved = x - 0
-        }
-        if (x > w) {
+        } else if (x > w) {
           newX = w
           moved = x - w
         }
@@ -171,15 +189,10 @@ export default {
           moved: moved
         }
       }
-
-      const lastXY = (this.lastXY ? this.lastXY :
-                      {x: Math.round(width / 2), y: Math.round(height / 2)} )
-      const lastX = keepInsideBoundary(lastXY['x'], width).value
-      const lastY = keepInsideBoundary(lastXY['y'], height).value
       
       const bboxRadiusModifier = [0.4, 0.35, 0.3, 0.25, 0.2, 0.15]
       const getMinMaxBbox = () => {
-        let mod = bboxRadiusModifier.length === 0 ? 0.5 : bboxRadiusModifier.pop()
+        let mod = bboxRadiusModifier.length === 0 ? 0.25 : bboxRadiusModifier.pop()
         const bboxRadius = mod * height
 
         console.log('bboxmod', mod)
@@ -229,9 +242,6 @@ export default {
       }
 
       const getSalientXYPos = () => {
-        const maxIter = 250
-        let iterCount = 0
-
         const neighborSaliencyThreshold = 0.5
 
         const getPixelValue = (x, y, width) => {
@@ -296,17 +306,16 @@ export default {
           }
         }
         
-        while(true) {
-          iterCount += 1
 
+        while(true) {
           const {minX, minY, maxX, maxY} = getMinMaxBbox()
 
           // if lastXY is good
           // do nothing
           let lastXYSaliency = getNeighborSalient(lastX, lastY)
-          if (lastXYSaliency && lastXYSaliency.nsRatio >= neighborSaliencyThreshold || iterCount > maxIter)
+          if (lastXYSaliency && lastXYSaliency.nsRatio >= neighborSaliencyThreshold)
             return {
-              salientXY: lastXYSaliency,
+              salientXY: lastXY,
               bbox: {
                 minX,
                 minY,
@@ -366,9 +375,7 @@ export default {
       ctx.strokeStyle = "#FF0000"
 
       // change this x and y
-      let rectRadius = 10
-      ctx.fillRect(salientXY['x']-rectRadius, salientXY['y']-rectRadius,
-                   rectRadius*2, rectRadius*2)
+      ctx.fillRect(salientXY['x'], salientXY['y'], 25, 25)
 
       ctx.strokeRect(minX, minY, maxX-minX, maxY-minY)
       

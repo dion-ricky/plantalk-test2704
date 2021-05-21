@@ -20,9 +20,9 @@
 </template>
 
 <script>
-import SearchScan from "../components/Input/SearchScan"
-import MyPlantListItem from "../components/MyPlantListItem"
-import FloatingActionButton from "../components/FloatingActionButton";
+import SearchScan from "../../components/Input/SearchScan"
+import MyPlantListItem from "../../components/MyPlantListItem"
+import FloatingActionButton from "../../components/FloatingActionButton";
 
 export default {
     name: "MyPlant",
@@ -38,7 +38,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import "../assets/theme.scss";
+@import "../../assets/theme.scss";
 
     .myplant-wrapper {
         margin: 0 20px;
