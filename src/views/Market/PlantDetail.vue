@@ -35,10 +35,14 @@
             Haworthia Fasciata, being an indoor and an easy to maintain plant can be the best to have which will provide nourishment and relaxation to mental health and you will unconsciously be affected by it.
         </p>
     </div>
+    <div class="pd-buy-wrapper">
+        <Button text="Buy plant" variant="primary" @click="toHome" />
+    </div>
 </template>
 
 <script>
 import BackNav from "../../components/Navigation/BackNav"
+import Button from "../../components/Button"
 
 import ShovelIcon from "../../assets/plantalk/plant-detail/shovel"
 import SunIcon from "../../assets/plantalk/plant-detail/sun"
@@ -48,6 +52,7 @@ export default {
     name: 'PlantDetail',
     components: {
         BackNav,
+        Button,
         ShovelIcon,
         SunIcon,
         WaterIcon
@@ -97,6 +102,7 @@ export default {
     .pd-wrapper {
         font-family: $body-font-stack;
         margin: 1rem 30px;
+        margin-bottom: 8rem;
 
         h2 {
             font-size: 1rem;
@@ -145,6 +151,20 @@ export default {
                 border-radius: 5px;
             }
         }
+    }
+
+    .pd-buy-wrapper {
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+
+        background-color: #ffffff;
+        background-color: white;
+        box-shadow: 0px 0px 50px 5px rgba(0, 0, 0, 0.08);
+        -webkit-box-shadow: 0px 0px 50px 5px rgba(0, 0, 0, 0.08);
+        -moz-box-shadow: 0px 0px 50px 5px rgba(0, 0, 0, 0.08);
+
+        padding: 1rem 1.75rem;
     }
 
     span.material-icons-outlined {
