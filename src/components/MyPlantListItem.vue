@@ -30,11 +30,21 @@ export default {
 
     .myplantlistitem-wrapper {
         display: flex;
+        cursor: pointer;
+
+        -webkit-tap-highlight-color: transparent;
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        -khtml-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
     }
 
     .plant-img {
         width: min(200px, 30%);
         object-fit: cover;
+        border-radius: 12px;
     }
 
     .plant-details {

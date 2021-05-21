@@ -33,9 +33,9 @@
 </template>
 
 <script>
-import BackNav from "../components/Navigation/BackNav"
-import WeeklyCalendar from "../components/Calendar/WeeklyCalendar"
-import MonthlyCalendar from "../components/Calendar/MonthlyCalendar"
+import BackNav from "../../components/Navigation/BackNav"
+import WeeklyCalendar from "../../components/Calendar/WeeklyCalendar"
+import MonthlyCalendar from "../../components/Calendar/MonthlyCalendar"
 
 export default {
     name: "MyPlantDetail",
@@ -48,7 +48,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import "../assets/theme.scss";
+@import "../../assets/theme.scss";
 
     .myplant-detail-wrapper {
         margin: 0 30px;
@@ -92,7 +92,7 @@ export default {
         border-top-left-radius: 20px;
         border-bottom-left-radius: 20px;
         padding: 2rem;
-        margin-top: 1rem;
+        margin-top: 3rem;
 
         width: 60%;
 

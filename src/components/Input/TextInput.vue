@@ -1,8 +1,11 @@
 <template>
 <div>
-    <span :class="'label ' + (isOnFocus ? 'focus' : '')">{{ label }}</span>
+    <span :class="'label ' + (isOnFocus ? 'focus' : '')"
+    v-if="label !== '!nolabel'"
+    >{{ label }}</span>
     <input type="text"
         :value="textInput"
+        :placeholder="placeholder"
         @input="$emit('update:textInput', $event.target.value)"
         @focus="toggleFocus" @blur="toggleFocus">
 </div>
@@ -16,7 +19,8 @@ export default {
     }),
     props: {
         label: String,
-        textInput: String
+        textInput: String,
+        placeholder: String
     },
     methods: {
         toggleFocus() {
@@ -44,7 +48,7 @@ export default {
 
     input[type='text'] {
         background-image:none;
-        background-color:transparent;
+        background-color:white;
         -webkit-box-shadow: none;
         -moz-box-shadow: none;
         box-shadow: none;

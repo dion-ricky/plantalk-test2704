@@ -38,9 +38,9 @@
 </template>
 
 <script>
-import PlantalkCamera from "../camera";
-import Reticle from "../assets/plantalk/scanner/reticle";
-import Banner from "../components/Banner";
+import PlantalkCamera from "../../camera";
+import Reticle from "../../assets/plantalk/scanner/reticle";
+import Banner from "../../components/Banner";
 
 import { Swiper, SwiperSlide } from "swiper/vue";
 import "swiper/swiper.scss";

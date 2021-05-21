@@ -7,7 +7,7 @@
 </template>
 
 <script>
-import PlantalkCamera from '../camera'
+import PlantalkCamera from '../../camera'
 import ScannerUI from "./ScannerUI"
 import ScannerCanvas from "./ScannerCanvas"
 

@@ -20,10 +20,10 @@
 </template>
 
 <script>
-import SearchScan from "../components/Input/SearchScan"
-import Banner from "../components/Banner"
-import TabNav from "../components/Navigation/TabNav"
-import PlantCard from "../components/PlantCard"
+import SearchScan from "../../components/Input/SearchScan"
+import Banner from "../../components/Banner"
+import TabNav from "../../components/Navigation/TabNav"
+import PlantCard from "../../components/PlantCard"
 
 export default {
     name: "Market",
@@ -74,7 +74,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import "../assets/theme.scss";
+@import "../../assets/theme.scss";
 
     .market-wrapper {
         margin: 0 20px;

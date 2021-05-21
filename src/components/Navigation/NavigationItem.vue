@@ -13,9 +13,6 @@
 
 export default {
     name: "NavigationItem",
-    components: {
-        
-    },
     props: {
         navId: String,
         currentActive: String

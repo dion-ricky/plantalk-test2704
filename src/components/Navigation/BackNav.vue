@@ -1,12 +1,17 @@
 <template>
     <div class="backnav-wrapper">
-        <span class="material-icons-outlined">chevron_left</span>
+        <span class="material-icons-outlined" @click="goBack">chevron_left</span>
     </div>
 </template>
 
 <script>
 export default {
-
+    name: "BackNav",
+    methods: {
+        goBack() {
+            this.$router.go(-1)
+        }
+    }
 }
 </script>
 
@@ -18,6 +23,8 @@ export default {
         width: 100%;
 
         padding: .5rem 1rem;
+        background-color: #ffffff;
+        opacity: 0.85;
     }
 
     span {

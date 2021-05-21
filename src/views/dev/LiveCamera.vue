@@ -10,7 +10,7 @@
 </template>
 
 <script>
-import PlantalkCamera from '../camera'
+import PlantalkCamera from '../../camera'
 
 export default {
     name: "LiveCamera",
