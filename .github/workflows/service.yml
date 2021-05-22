@@ -25,6 +25,7 @@ jobs:
     
     - name: npm install, build, and test
       run: |
+        npm ci
         cd ./services
         npm ci
         cd ..
