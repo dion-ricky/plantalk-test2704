@@ -27,6 +27,7 @@ jobs:
       run: |
         cd ./services
         npm ci
+        cd ..
         ./node_modules/.bin/firebase deploy --project plantalk-test2704 --debug --only functions --token "$FIREBASE_TOKEN"
       env:
         CI: true
