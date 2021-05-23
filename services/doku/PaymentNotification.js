@@ -14,4 +14,4 @@ app.post('/payments/notifications', (req, res) => {
 //     console.log("Notification server started")
 // });
 
-exports.paymentNotification = app
+exports.doku_paymentNotification = app
