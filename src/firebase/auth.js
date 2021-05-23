@@ -28,6 +28,10 @@ class PlantalkAuth {
                 })
         });
     }
+
+    getCurrentUser() {
+        return this.auth.currentUser;
+    }
 }
 
 export default PlantalkAuth

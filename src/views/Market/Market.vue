@@ -12,8 +12,10 @@
 
             <tab-nav class="tabnav-market" :tabs="marketPopularFilter" @tabnav:clicked="tabnavClicked"/>
 
-            <div class="market-grid">
-                <plant-card  v-for="plant in plants" :key="plant.key" :title="plant.title" :price="plant.price" :smallTxt="plant.category" :imgSrc="plant.img" />
+            <div class="market-grid" v-if="plants.length !== 0">
+                <plant-card v-for="plant in plants" :key="plant[0]" :title="plant[1].name"
+                    :price="plant[1].price+'xp'" :smallTxt="plant[1].category"
+                    :imgSrc="plant[1].thumbnail" @click="plantDetail(plant[0])"/>
             </div>
         </div>
     </div>
@@ -24,6 +26,8 @@ import SearchScan from "../../components/Input/SearchScan"
 import Banner from "../../components/Banner"
 import TabNav from "../../components/Navigation/TabNav"
 import PlantCard from "../../components/PlantCard"
+
+import PlantalkFirebase from "../../firebase"
 
 export default {
     name: "Market",
@@ -36,39 +40,31 @@ export default {
     data: () => ({
         marketPopularFilter: ['All', 'Indoor', 'Outdoor'],
         searchInput: '',
-        plants: [{
-            key: 1,
-            title: "Haworthia Fasciata",
-            price: "120xp",
-            category: "Indoor Plant",
-            img: "https://firebasestorage.googleapis.com/v0/b/plantalk-test2704.appspot.com/o/market%2Fmarket-plant1.png?alt=media&token=6a5194a4-5175-4556-8be6-12668019cef8"
-        },
-        {
-            key: 2,
-            title: "Cactus San Pedro",
-            price: "130xp",
-            category: "Outdoor Plant",
-            img: "https://firebasestorage.googleapis.com/v0/b/plantalk-test2704.appspot.com/o/market%2Fmarket-plant2.png?alt=media&token=6a5194a4-5175-4556-8be6-12668019cef8"
-        },
-        {
-            key: 3,
-            title: "Asplenium Antiquum",
-            price: "100xp",
-            category: "Outdoor Plant",
-            img: "https://firebasestorage.googleapis.com/v0/b/plantalk-test2704.appspot.com/o/market%2Fmarket-plant3.png?alt=media&token=6a5194a4-5175-4556-8be6-12668019cef8"
-        },
-        {
-            key: 4,
-            title: "Lidah Mertua",
-            price: "80xp",
-            category: "Outdoor Plant",
-            img: "https://firebasestorage.googleapis.com/v0/b/plantalk-test2704.appspot.com/o/market%2Fmarket-plant4.png?alt=media&token=6a5194a4-5175-4556-8be6-12668019cef8"
-        }]
+        plants: [],
+        
     }),
     methods: {
         tabnavClicked(e) {
             console.log(e);
+        },
+        plantDetail(e) {
+            this.$router.push({name: 'plantdetail', params: {id: e}})
         }
+    },
+    created() {
+        const db = PlantalkFirebase.getDb()
+
+        db.ref('plants').get()
+            .then((s) => {
+                if (s.exists()) {
+                    let tempPlants = Object.entries(s.val())
+                    tempPlants = tempPlants
+                    this.plants = tempPlants
+                }
+            })
+            .catch((err) => {
+                console.log(err)
+            })
     }
 }
 </script>
