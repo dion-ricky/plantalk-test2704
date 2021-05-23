@@ -96,6 +96,7 @@ export default {
         setActiveNavItem() {
             // Set current active navigation item
             // by inferring from path
+            
             let currentPath = this.$route.path
             let currentRoute = this.$router.getRoutes().filter(route => route.path === currentPath)[0]
 

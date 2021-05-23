@@ -1,62 +1,117 @@
 <template>
     <back-nav />
-    <div class="pd-head">
-        <div class="header">
-            <h1 class="name">Haworthia Fasciata</h1>
-            <p class="category">Indoor Plant</p>
-            <p>100xp</p>
-            <span class="material-icons-outlined">favorite_border</span>
+    <loading-screen v-if="data === null" />
+    <div class="pd-wrapper-condition" v-if="data !== null">
+        <div class="pd-head">
+            <div class="header">
+                <h1 class="name">{{ data.name }}</h1>
+                <p class="category">{{ data.category }}</p>
+                <p>{{ data.price }}xp</p>
+                <span class="material-icons-outlined">favorite_border</span>
+            </div>
+            <div class="img">
+                <img :src="data.detailThumbnail" alt="" srcset="">
+            </div>
         </div>
-        <div class="img">
-            <img src="https://firebasestorage.googleapis.com/v0/b/plantalk-test2704.appspot.com/o/market%2Fplant1-ts.png?alt=media&token=78ca3148-4601-4152-a923-8547904b143c" alt="" srcset="">
+        <div class="plant-care">
+            <div class="pc-card">
+                <shovel-icon />
+                <p class="pc-category">Care</p>
+                <p class="pc-label">{{ data.maintenance.care }}</p>
+            </div>
+            <div class="pc-card">
+                <sun-icon />
+                <p class="pc-category">Sun</p>
+                <p class="pc-label">{{ data.maintenance.sun }}</p>
+            </div>
+            <div class="pc-card">
+                <water-icon />
+                <p class="pc-category">Water</p>
+                <p class="pc-label">{{ data.maintenance.water }}</p>
+            </div>
         </div>
-    </div>
-    <div class="plant-care">
-        <div class="pc-card">
-            <shovel-icon />
-            <p class="pc-category">Care</p>
-            <p class="pc-label">Easy</p>
-        </div>
-        <div class="pc-card">
-            <sun-icon />
-            <p class="pc-category">Sun</p>
-            <p class="pc-label">Part</p>
-        </div>
-        <div class="pc-card">
-            <water-icon />
-            <p class="pc-category">Water</p>
-            <p class="pc-label">Every Week</p>
-        </div>
-    </div>
-    <div class="pd-wrapper">
+        <div class="pd-wrapper">
 
-        <h2>Benefit</h2>
-        <p class="pd-benefit">
-            Haworthia Fasciata, being an indoor and an easy to maintain plant can be the best to have which will provide nourishment and relaxation to mental health and you will unconsciously be affected by it.
-        </p>
-    </div>
-    <div class="pd-buy-wrapper">
-        <Button text="Buy plant" variant="primary" @click="toHome" />
+            <h2>Benefit</h2>
+            <p class="pd-benefit">
+                {{ data.description }}
+            </p>
+        </div>
+        <div class="pd-buy-wrapper">
+            <Button text="Buy plant" variant="primary" @click="buyPlant" />
+        </div>
     </div>
 </template>
 
 <script>
 import BackNav from "../../components/Navigation/BackNav"
 import Button from "../../components/Button"
+import LoadingScreen from "../../components/State/LoadingScreen"
 
 import ShovelIcon from "../../assets/plantalk/plant-detail/shovel"
 import SunIcon from "../../assets/plantalk/plant-detail/sun"
 import WaterIcon from "../../assets/plantalk/plant-detail/water"
+
+import PlantalkFirebase from "../../firebase"
+import MarketController from "../../controller/market"
 
 export default {
     name: 'PlantDetail',
     components: {
         BackNav,
         Button,
+        LoadingScreen,
         ShovelIcon,
         SunIcon,
         WaterIcon
     },
+    data: () => ({
+        data: null
+    }),
+    methods: {
+        buyPlant() {
+            const uid = PlantalkFirebase.getAuth().getCurrentUser().uid
+
+            let itemId = this.data.key
+            let price = this.data.price * 1000
+
+            const { data, key } = this.createOrder(uid, itemId, price)
+            this.getPaymentUrl(data.totalAmount, uid+'.'+key)
+                .then((resp) => {
+                    // redirect to 
+                    window.location.href = resp.redirect_url
+                })
+                .catch((err) => {
+                    console.log(err)
+                })
+        },
+        createOrder(uid, itemId, price) {
+            return MarketController.createOrder(uid, itemId, price)
+        },
+        getPaymentUrl(ga, id) {
+            return MarketController.getPaymentUrl(ga, id)
+        }
+    },
+    created() {
+        // get plant data from db
+        const db = PlantalkFirebase.getDb()
+
+        let plantId = this.$route.params.id
+
+        db.ref('plants').child(plantId).get()
+            .then((s) => {
+                if (s.exists()) {
+                    this.data = s.val()
+                    this.data.key = s.key
+                } else {
+                    // no data returned
+                    // redirect back to market
+                }
+            })
+            .catch((err) => {
+                console.log(err)
+            })
+    }
 }
 </script>
 

@@ -37,6 +37,8 @@ export default {
     .card-wrapper {
         border-radius: 12px;
         border: solid 1px #F8F8F8;
+
+        cursor: pointer;
     }
 
     .card-img {

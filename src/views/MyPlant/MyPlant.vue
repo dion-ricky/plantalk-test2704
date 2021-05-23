@@ -1,15 +1,18 @@
 <template>
-    <div class="myplant-wrapper">
+    <loading-screen v-if="userPlants.length === 0" />
+    <div class="myplant-wrapper" v-if="userPlants.length !== 0">
         <div class="myplant-header">
             <h1>My Plants</h1>
             <search-scan v-model:searchInput="searchInput" placeholder="Find Plant" />
         </div>
         <div class="myplant-content">
             <my-plant-list-item
-                imgSrc="https://firebasestorage.googleapis.com/v0/b/plantalk-test2704.appspot.com/o/market%2Fmarket-plant1.png?alt=media&token=6a5194a4-5175-4556-8be6-12668019cef8"
-                title="Haworthia Fasciata"
+                v-for="(plant, index) in userPlants"
+                :key="index"
+                :imgSrc="plant.thumbnail"
+                :title="plant.name"
                 plantedAt="2 May"
-                category="Indoor Plant"
+                :category="plant.category"
                 nextWatering="20 May"
                 needFertilizer="Fertilizer"
                 @click="$router.push({name: 'myplantdetail'})"
@@ -23,17 +26,71 @@
 import SearchScan from "../../components/Input/SearchScan"
 import MyPlantListItem from "../../components/MyPlantListItem"
 import FloatingActionButton from "../../components/FloatingActionButton";
+import LoadingScreen from "../../components/State/LoadingScreen"
+
+import PlantalkFirebase from "../../firebase"
 
 export default {
     name: "MyPlant",
     components: {
         SearchScan,
         MyPlantListItem,
-        FloatingActionButton
+        FloatingActionButton,
+        LoadingScreen
     },
     data: () => ({
+        userPlants: [],
         searchInput: ''
     }),
+    methods: {
+        getUserPlantsInfo(plants) {
+            const db = PlantalkFirebase.getDb()
+
+            plants.forEach((v, i) => {
+                this.getPlantInfo(v).then((plantInfo) => {
+                    this.userPlants.push(plantInfo)
+                })
+            })
+        },
+        getPlantInfo(plantid) {
+            const db = PlantalkFirebase.getDb()
+
+            return new Promise((res, rej) => {
+                db.ref('plants').child(plantid).get()
+                    .then((s) => {
+                        if (s.exists()) {
+                            res(s.val())
+                        } else {
+                            rej(new Error("Reference not exists"))
+                        }
+                    })
+                    .catch((err) => {
+                        rej(err)
+                    })
+            })
+        }
+    },
+    created() {
+        const db = PlantalkFirebase.getDb()
+        const auth = PlantalkFirebase.getAuth().auth
+
+        let getOwnedPlant = (uid) => {
+            db.ref('users').child(uid).child('owned_plants').get()
+                .then((s) => {
+                    if (s.exists()) {
+                        this.getUserPlantsInfo(s.val())
+                    }
+                })
+                .catch((err) => {
+                    console.log(err)
+                })
+        }
+
+        auth.onAuthStateChanged((user) => {
+            getOwnedPlant(user.uid)   
+        })
+
+    }
 }
 </script>
 
@@ -47,6 +104,10 @@ export default {
 
     .myplant-content {
         margin-top: 1.5rem;
+
+        &>* {
+            margin-top: 1rem;
+        }
     }
 
     h1 {
