@@ -52,3 +52,68 @@
             })
         })
     }
+
+
+{
+    "users": {
+        "a1kAI2": {
+            "name": "Bob",
+            "room": {
+                "community": [],
+                "consultation": []
+            }
+        }
+    },
+
+    "communities": {
+        "kq91Amc": {
+            "name": "Pecinta Sukulen",
+            "chatroom": {
+                "chatroomid": "oqkxi10",
+                "lastmessage": "Abcdef ...",
+                "timestamp": 19149123911,
+                "lastbatch": "b1"
+            }
+        }
+    },
+
+    "consultations": {
+        "mqiX91": {
+            "name": "Mrs. Delaware",
+            "profession": "Agriculture Lecturer",
+            "chatroom": {
+                "userid": "a1kAI2",
+                "chatroomid": "oqkxi10",
+                "lastmessage": "Abcdef ...", //short
+                "timestamp": 14210421221,
+                "lastbatch": "b1"
+            }
+        }
+    }
+
+    "chatrooms": {
+        "oqkxi10.b1": {
+            "prevbatch": "",
+            "messages": [{ //batch of 10 or less messages
+                    "userid": "a1kAI2",
+                    "message": "Hello there",
+                    "timestamp": 1929193113
+                },
+                {
+
+                },
+                {
+
+                }]
+            }
+        },
+        "oqkxi10.b2": {
+            "prevbatch": "b1",
+            "messages": [{
+                "userid": "",
+                "message": "",
+                "timestamp": 193919212
+            }]
+        }
+    }
+}

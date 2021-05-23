@@ -6,7 +6,7 @@
       {{ lastXY }}
       <br />
       <button @click="toBinary">To Binary</button>
-      <button @click="toggleBinary">Stop</button>
+      <button @click="toggleBinary">{{ stopFlag ? "Continue" : "Stop" }}</button>
     </div>
     <br />
   </div>
@@ -21,8 +21,8 @@
 </template>
 
 <script>
-import PlantalkCamera from "../camera";
-import Reticle from "../assets/plantalk/scanner/reticle";
+import PlantalkCamera from "../../camera";
+import Reticle from "../../assets/plantalk/scanner/reticle";
 
 export default {
   name: "Playground",
@@ -306,7 +306,7 @@ export default {
           let lastXYSaliency = getNeighborSalient(lastX, lastY)
           if (lastXYSaliency && lastXYSaliency.nsRatio >= neighborSaliencyThreshold || iterCount > maxIter)
             return {
-              salientXY: lastXY,
+              salientXY: lastXYSaliency,
               bbox: {
                 minX,
                 minY,

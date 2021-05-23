@@ -8,7 +8,7 @@
                 <div>
                     <a href="" class="a-fp">Forgot Password?</a>
                 </div>
-                <Button text="Log in" variant="primary" @click="toHome" />
+                <Button text="Log in" variant="primary" @click="login" />
                 <p class="muted">Doesn't have an account? <a @click="$router.push('/signup')" class="a-ca">Create account</a></p>
             </div>
         </div>
@@ -20,6 +20,8 @@
     import TextInput from "../../components/Input/TextInput";
     import PasswordInput from "../../components/Input/PasswordInput";
     import Button from "../../components/Button";
+    
+    import PlantalkFirebase from "../../firebase"
 
     export default {
         name: "Login",
@@ -34,8 +36,15 @@
             password: ''
         }),
         methods: {
-            toHome() {
-                this.$router.push({name: 'home'})
+            login(e) {
+                PlantalkFirebase.getAuth()
+                    .signIn(this.email, this.password)
+                    .then((userCredential) => {
+                        this.$router.push({name: 'home'})
+                    })
+                    .catch((err) => {
+                        console.log(err.code, err.message)
+                    })
             }
         }
     }

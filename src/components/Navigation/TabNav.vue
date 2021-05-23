@@ -12,7 +12,8 @@
 export default {
     name: "TabNav",
     props: {
-        tabs: Array
+        tabs: Array,
+        propsActive: String
     },
     data: () => ({
         active: ''
@@ -24,7 +25,7 @@ export default {
         }
     },
     created() {
-        this.active = this.tabs[0];
+        this.active = this.propsActive ? this.propsActive : this.tabs[0];
     }
 }
 </script>

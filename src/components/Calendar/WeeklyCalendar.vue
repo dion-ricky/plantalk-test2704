@@ -91,7 +91,7 @@ export default {
     },
   },
   created() {
-    let weekDates = this.getWeekDates(new Date("2021/05/01"));
+    let weekDates = this.getWeekDates(new Date());
 
     let plantedAt = this.getRandomInt(7);
     let wateredAt = plantedAt + 1;

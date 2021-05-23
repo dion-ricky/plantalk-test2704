@@ -25,12 +25,12 @@
 </template>
 
 <script>
-import IconButton from "../components/IconButton"
+import IconButton from "../../components/IconButton"
 
-import CaptureIcon from "../assets/plantalk/scanner/capture-icon"
-import CloseIcon from "../assets/plantalk/scanner/close-icon"
-import FlashOffIcon from "../assets/plantalk/scanner/flash_off-icon"
-import FlashOnIcon from "../assets/plantalk/scanner/flash_on-icon"
+import CaptureIcon from "../../assets/plantalk/scanner/capture-icon"
+import CloseIcon from "../../assets/plantalk/scanner/close-icon"
+import FlashOffIcon from "../../assets/plantalk/scanner/flash_off-icon"
+import FlashOnIcon from "../../assets/plantalk/scanner/flash_on-icon"
 
 export default {
     name: "ScannerUI",

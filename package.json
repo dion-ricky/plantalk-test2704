@@ -4,11 +4,15 @@
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve --host dev.plantalk.dionricky.com --port 8081 --https",
-    "build": "vue-cli-service build"
+    "build": "vue-cli-service build",
+    "service": "node ./services/index.js"
   },
   "dependencies": {
+    "axios": "^0.21.1",
     "core-js": "^3.6.5",
+    "cors": "^2.8.5",
     "firebase": "^8.4.2",
+    "firebase-functions": "^3.14.1",
     "register-service-worker": "^1.7.1",
     "swiper": "^6.5.9",
     "vue": "^3.0.0",

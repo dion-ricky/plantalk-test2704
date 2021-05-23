@@ -6,7 +6,7 @@
                 <TextInput label="Name" v-model:textInput="name" />
                 <TextInput label="Email" v-model:textInput="email" />
                 <PasswordInput label="Password" v-model:passwordInput="password" />
-                <Button text="Create Account" variant="primary" />
+                <Button text="Create Account" variant="primary" @click="createAccount" />
                 <p class="muted">Already have an account?<br><a @click="$router.push('/login')" class="a-ca">Log in</a></p>
             </div>
         </div>
@@ -18,6 +18,8 @@
     import TextInput from "../../components/Input/TextInput";
     import PasswordInput from "../../components/Input/PasswordInput";
     import Button from "../../components/Button";
+
+    import PlantalkFirebase from "../../firebase";
 
     export default {
         name: "Signup",
@@ -31,7 +33,48 @@
             name: '',
             email: '',
             password: ''
-        })
+        }),
+        methods: {
+            createAccount(e) {
+                PlantalkFirebase.getAuth()
+                    .createUser(this.email, this.password)
+                    .then((userCredential) => {
+                        this.userCreatedFlow(userCredential)
+                    })
+                    .catch((err) => {
+                        console.log(err.code, err.message)
+                    })
+            },
+
+            userCreatedFlow(uc) {
+                // create user in rtdb
+                this.insertUser(uc)
+
+                // redirect to home
+                this.$router.push({name: 'home'})
+            },
+
+            insertUser(uc) {
+                if (!uc) {
+                    return;
+                }
+
+                let db = PlantalkFirebase.getDb()
+                
+                let data = {
+                    name: this.name,
+                    room: {
+                        community: [],
+                        consultation: []
+                    }
+                }
+
+                db.ref('users/' + uc.user.uid).set(data)
+                    .catch((err) => {
+                        console.log(err.code, err.message)
+                    })
+            }
+        }
     }
 </script>
 
