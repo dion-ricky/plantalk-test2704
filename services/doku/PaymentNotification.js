@@ -10,8 +10,8 @@ app.post('/payments/notifications', (req, res) => {
     res.sendStatus(200);
 })
 
-app.listen(port, () => {
-    console.log("Notification server started")
-});
+// app.listen(port, () => {
+//     console.log("Notification server started")
+// });
 
-exports.paymentNotification = app
+exports.doku_paymentNotification = app

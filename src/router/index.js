@@ -19,7 +19,10 @@ import ChatRoom from "../views/Chat/ChatRoom"
 import Market from "../views/Market/Market"
 import PlantDetail from "../views/Market/PlantDetail"
 
+import AfterPayment from "../views/Payment/AfterPayment"
+
 import Playground from "../views/dev/Playground"
+import InsertDb from "../views/dev/InsertDb"
 
 const routes = [
     {
@@ -94,9 +97,18 @@ const routes = [
         component: ChatRoom
     },
     {
-        path: '/app/plant/detail',
+        path: '/app/plant/detail/:id',
         name: 'plantdetail',
         component: PlantDetail
+    },
+    {
+        path: '/redir/after/payment',
+        component: AfterPayment
+    },
+    {
+        path: '/dev/insert/db',
+        name: 'insertdb',
+        component: InsertDb
     },
     {
         path: '/:catchAll(.*)',

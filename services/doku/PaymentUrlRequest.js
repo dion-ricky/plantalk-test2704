@@ -2,12 +2,15 @@ const { getTimestampforDoku, generateDigest, generateSignature } = require('./ut
 
 const express = require('express')
 const axios = require('axios')
+const cors = require('cors')
 const app = express()
 const port = 8082
 
+app.use(cors())
+
 app.get('/', (req, res) => {
     // res.send(getTimestampforDoku())
-    new PlantalkRequestPaymentUrl(200000, "INV-ALO-19009112")
+    new PlantalkRequestPaymentUrlDoku(200000, "INV-ALO-19009112")
         .requestPaymentUrl()
         .then((resp) => {
             res.send(resp)
@@ -33,9 +36,9 @@ app.listen(port, () => {
     console.log("Server started")
 })
 
-exports.requestPaymentUrl = app
+exports.doku_requestPaymentUrl = app
 
-class PlantalkRequestPaymentUrl {
+class PlantalkRequestPaymentUrlDoku {
     constructor(amount, invoice_number) {
         this.reqBody =
         {
@@ -46,10 +49,7 @@ class PlantalkRequestPaymentUrl {
             "payment": {
                 "payment_due_date": 30,
                 "payment_method_types": [
-                    "VIRTUAL_ACCOUNT_BCA",
                     "VIRTUAL_ACCOUNT_BANK_MANDIRI",
-                    "VIRTUAL_ACCOUNT_BANK_SYARIAH_MANDIRI",
-                    "VIRTUAL_ACCOUNT_DOKU"
                 ]
             }
         }
