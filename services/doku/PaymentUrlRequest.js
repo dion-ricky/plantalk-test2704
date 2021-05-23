@@ -46,10 +46,7 @@ class PlantalkRequestPaymentUrl {
             "payment": {
                 "payment_due_date": 30,
                 "payment_method_types": [
-                    "VIRTUAL_ACCOUNT_BCA",
                     "VIRTUAL_ACCOUNT_BANK_MANDIRI",
-                    "VIRTUAL_ACCOUNT_BANK_SYARIAH_MANDIRI",
-                    "VIRTUAL_ACCOUNT_DOKU"
                 ]
             }
         }

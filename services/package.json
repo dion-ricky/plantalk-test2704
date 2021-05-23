@@ -19,5 +19,8 @@
   },
   "engines": {
     "node": "12"
+  },
+  "devDependencies": {
+    "firebase-functions-test": "^0.2.3"
   }
 }
