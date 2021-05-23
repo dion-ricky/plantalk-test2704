@@ -74,11 +74,11 @@ export default {
 
     .market-wrapper {
         margin: 0 20px;
-        margin-bottom: 110px;
     }
 
     .market-content {
         margin-top: 1.5rem;
+        padding-bottom: 110px;
     }
 
     .market-grid {
