@@ -1,6 +1,6 @@
 <template>
     <!-- Add scanner UI here and set higher z-index -->
-    <ScannerUI @capture:click="capture" />
+    <ScannerUI @capture:click="capture" @close:click="exitScanner" />
     <!-- <ScannerCanvas :imageBitmap="imageBitmap" /> -->
     <canvas ref="scannerCanvas"></canvas>
     <video ref="player" :srcObject="stream" autoplay></video>
@@ -11,14 +11,17 @@ import PlantalkCamera from '../../camera'
 import ScannerUI from "./ScannerUI"
 import ScannerCanvas from "./ScannerCanvas"
 
+import SalientObjectDetection from "../../salient"
+
 export default {
-    name: "LiveCamera",
+    name: "Scanner",
     components: {
         ScannerUI,
         ScannerCanvas
     },
     data: () => ({
         camera: PlantalkCamera,
+        sod: SalientObjectDetection,
         stream: null,
         isTorchOn: false,
         imageBitmap: null,
@@ -72,28 +75,21 @@ export default {
             })
         },
         capture() {
-            const video = this.$refs.player
-            const imageWidth = video.videoWidth
-            const imageHeight = video.videoHeight
+            let sod = this.sod
+            let frameData = sod.getFrame()
 
-            this.canvas.width = imageWidth
-            this.canvas.height = imageHeight
-            this.canvasCtx.drawImage(video, 0, 0, imageWidth, imageHeight)
+            this.canvas.width = frameData.imageWidth
+            this.canvas.height = frameData.imageHeight
+            this.canvasCtx.putImageData(new ImageData(frameData.frameData, frameData.imageWidth), 0, 0)
         },
-        capturev2() {
-            const t0 = performance.now()
-            const video = this.$refs.player
-            const imageWidth = video.videoWidth
-            const imageHeight = video.videoHeight
+        exitScanner() {
+            this.$router.go(-1)
+        },
+        getReticlePos() {
+            // 
 
-            this.canvas.width = imageWidth
-            this.canvas.height = imageHeight
-            this.canvasCtx.drawImage(video, 0, 0, imageWidth, imageHeight)
-
-            const data = this.canvasCtx.getImageData(0, 0, imageWidth, imageHeight).data
-            const t1 = performance.now()
-            console.log("taking picture took: " + (t1 - t0) + " ms")
-        }
+        },
+        
     },
     beforeUnmount() {
         this.camera.stopVideo(this.stream);
@@ -106,6 +102,12 @@ export default {
             .then((mediaStream) => {
                 this.stream = mediaStream
         });
+
+        if (window.Worker) {
+            const worker = new Worker("/imageBinarizer.js");
+
+            this.binarizerWorker = worker;
+        }
     },
     mounted() {
         this.$nextTick(() => {
@@ -114,6 +116,8 @@ export default {
             const canvasCtx = canvas.getContext('2d')
             this.canvas = canvas
             this.canvasCtx = canvasCtx
+
+            this.sod = new SalientObjectDetection(this.$refs.player, document.createElement('canvas'))
         });
     }
 }
