@@ -75,7 +75,6 @@ export default {
             })
         },
         capture() {
-            let sod = this.sod
             let frameData = sod.getFrame()
 
             this.canvas.width = frameData.imageWidth
@@ -85,13 +84,13 @@ export default {
         exitScanner() {
             this.$router.go(-1)
         },
-        getReticlePos() {
-            // 
-
+        onReticleXYCallback(reticleXYPos) {
+            // console.log(reticleXYPos)
         },
         
     },
     beforeUnmount() {
+        this.sod.stopFlag = true
         this.camera.stopVideo(this.stream);
     },
     created() {
@@ -112,12 +111,23 @@ export default {
     mounted() {
         this.$nextTick(() => {
             const canvas = this.$refs.scannerCanvas
-            console.log(canvas)
+            // console.log(canvas)
             const canvasCtx = canvas.getContext('2d')
             this.canvas = canvas
             this.canvasCtx = canvasCtx
 
-            this.sod = new SalientObjectDetection(this.$refs.player, document.createElement('canvas'))
+            this.sod = new SalientObjectDetection({
+                videoRef            : this.$refs.player,
+                onReticleXYCallback : this.onReticleXYCallback,
+                workerInstance      : this.binarizerWorker,
+                emptyCanvas         : document.createElement('canvas')
+            }, window.performance)
+
+            this.binarizerWorker.onmessage = (e) => {
+                this.sod.workerMsgHandler(e)
+            }
+
+            this.sod.init()
         });
     }
 }
