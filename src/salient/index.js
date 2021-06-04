@@ -61,20 +61,20 @@ class SalientObjectDetection {
       }
     }
 
-    workerMsgHandler(msg) {
+    async workerMsgHandler(msg) {
       const t0 = this.performance.now()
       this.getReticleXY(msg)
       const t1 = this.performance.now()
 
       const totalTime = msg.data.totalTime + (t0-t1)
       const fps = Math.floor(1000/totalTime)
-      const preferredFPS = 2
+      const preferredFPS = 1
 
       const delay = fps < preferredFPS ? (1000/fps) : ((1000/preferredFPS) - totalTime)
 
       console.log('FPS: ', fps < preferredFPS ? fps : preferredFPS)
-      console.log('delay: ', delay)
-      this.sleep(delay)
+      // console.log('delay: ', delay)
+      await this.sleep(delay)
       this.imageBinarizer()
     }
 
@@ -176,8 +176,6 @@ class SalientObjectDetection {
         const salientXY = salientXYPos['salientXY']
 
         this.lastXY = salientXY
-
-        console.log(salientXYPos)
 
         this.callbackOnReticleXY(salientXYPos)
     }

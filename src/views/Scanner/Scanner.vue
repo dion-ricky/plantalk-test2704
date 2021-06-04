@@ -1,8 +1,11 @@
 <template>
     <!-- Add scanner UI here and set higher z-index -->
     <ScannerUI @capture:click="capture" @close:click="exitScanner" />
+    <div class="reticle-container">
+        <Reticle width="250px" height="250px" ref="reticle" :state="reticle.state" />
+    </div>
     <!-- <ScannerCanvas :imageBitmap="imageBitmap" /> -->
-    <canvas ref="scannerCanvas"></canvas>
+    <!-- <canvas ref="scannerCanvas"></canvas> -->
     <video ref="player" :srcObject="stream" autoplay></video>
 </template>
 
@@ -10,6 +13,7 @@
 import PlantalkCamera from '../../camera'
 import ScannerUI from "./ScannerUI"
 import ScannerCanvas from "./ScannerCanvas"
+import Reticle from "../../components/Scanner/Reticle"
 
 import SalientObjectDetection from "../../salient"
 
@@ -17,7 +21,8 @@ export default {
     name: "Scanner",
     components: {
         ScannerUI,
-        ScannerCanvas
+        ScannerCanvas,
+        Reticle
     },
     data: () => ({
         camera: PlantalkCamera,
@@ -26,7 +31,10 @@ export default {
         isTorchOn: false,
         imageBitmap: null,
         canvas: null,
-        canvasCtx: null
+        canvasCtx: null,
+        reticle: {
+            state: 'sensing'
+        }
     }),
     methods: {
         openCamera() {
@@ -85,9 +93,16 @@ export default {
             this.$router.go(-1)
         },
         onReticleXYCallback(reticleXYPos) {
-            // console.log(reticleXYPos)
+            this.moveReticle(reticleXYPos.salientXY)
         },
-        
+        moveReticle(pos) {
+            const reticle = this.reticleElement.$el;
+            const x = pos.x - 50;
+            const y = pos.y - 50;
+
+            let transform = `translate(${x}px, ${y}px)`
+            reticle.style.transform = transform;
+        }
     },
     beforeUnmount() {
         this.sod.stopFlag = true
@@ -110,11 +125,11 @@ export default {
     },
     mounted() {
         this.$nextTick(() => {
-            const canvas = this.$refs.scannerCanvas
-            // console.log(canvas)
-            const canvasCtx = canvas.getContext('2d')
-            this.canvas = canvas
-            this.canvasCtx = canvasCtx
+            // const canvas = this.$refs.scannerCanvas
+            // const canvasCtx = canvas.getContext('2d')
+            // this.canvas = canvas
+            // this.canvasCtx = canvasCtx
+            this.reticleElement = this.$refs.reticle
 
             this.sod = new SalientObjectDetection({
                 videoRef            : this.$refs.player,
@@ -148,5 +163,13 @@ canvas {
     height: 100vh;
     z-index: 5;
     object-fit: cover;
+}
+
+.reticle-container {
+    position: fixed;
+    top: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 5;
 }
 </style>

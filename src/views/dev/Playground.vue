@@ -22,12 +22,10 @@
 
 <script>
 import PlantalkCamera from "../../camera";
-import Reticle from "../../assets/plantalk/scanner/reticle";
 
 export default {
   name: "Playground",
   components: {
-    Reticle,
   },
   data: () => ({
     stream: null,

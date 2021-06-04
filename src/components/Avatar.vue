@@ -26,7 +26,7 @@ export default {
         
         border-radius: 0.75rem;
 
-        font-size: 1.5rem;
+        font-size: 1.25rem;
         font-weight: bold;
         font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
     }
