@@ -56,7 +56,7 @@ export default {
             const db = PlantalkFirebase.getDb()
 
             return new Promise((res, rej) => {
-                db.ref('plants').child(plantid).get()
+                db.ref('plants').child(plantid).once('value')
                     .then((s) => {
                         if (s.exists()) {
                             res(s.val())
@@ -75,7 +75,7 @@ export default {
         const auth = PlantalkFirebase.getAuth().auth
 
         let getOwnedPlant = (uid) => {
-            db.ref('users').child(uid).child('owned_plants').get()
+            db.ref('users').child(uid).child('owned_plants').once('value')
                 .then((s) => {
                     if (s.exists()) {
                         this.getUserPlantsInfo(s.val())

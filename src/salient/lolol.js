@@ -1,40 +1,4 @@
-<template>
-  <div class="wrapper-pg">
-    <canvas @click="userAssist" ref="canvas" class="red"></canvas>
-    <video ref="video" :srcObject="stream" autoplay></video>
-    <div>
-      {{ lastXY }}
-      <br />
-      <button @click="toBinary">To Binary</button>
-      <button @click="toggleBinary">{{ stopFlag ? "Continue" : "Stop" }}</button>
-    </div>
-    <br />
-  </div>
-
-  <!-- <Reticle width="250px" height="250px" :state="state" />
-        <div>
-            <button @click="state = 'sensing'">Sensing</button>
-            <button @click="state = 'error'">Error</button>
-            <button @click="state = 'loading'">Loading</button>
-            <button @click="state = 'move-closer'">Move Closer</button>
-        </div> -->
-</template>
-
-<script>
-import PlantalkCamera from "../../camera";
-
-export default {
-  name: "Playground",
-  components: {
-  },
-  data: () => ({
-    stream: null,
-    binarizerWorker: null,
-    stopFlag: false,
-    tempCanvas: null,
-    lastXY: null
-  }),
-  methods: {
+methods: {
     userAssist(e) {
       let elWidth = e.target.clientWidth
       let elHeight = e.target.clientHeight
@@ -51,10 +15,10 @@ export default {
       }
 
       // console.log(e)
-    },
+    }
     toggleBinary() {
       this.stopFlag = !this.stopFlag
-    },
+    }
     getFrame() {
       const video = this.$refs.video;
 
@@ -75,7 +39,7 @@ export default {
         'imageWidth': imageWidth,
         'imageHeight': imageHeight
       }
-    },
+    }
     toBinary() {
       if (this.stopFlag) {
         return
@@ -117,7 +81,7 @@ export default {
         
         this.toBinary()
       }
-    },
+    }
     inferXYReticlePos(e) {
       const t0 = performance.now()
       
@@ -382,7 +346,10 @@ export default {
       // console.log('bi', binaryImage)
     }
   },
-  created() {
+
+
+
+created() {
     const camera = new PlantalkCamera();
     this.camera = camera;
 
@@ -395,33 +362,4 @@ export default {
 
       this.binarizerWorker = worker;
     }
-  },
-};
-</script>
-
-<style lang="scss" scoped>
-// .wrapper-pg {
-// position: relative;
-// height: 100%;
-//   width: 100vw;
-//   height: 100vh;
-//   padding: 2rem;
-//   background-color: #eeeeee;
-//   display: flex;
-//   align-items: center;
-//   justify-content: center;
-//     flex-direction: column;
-// }
-
-video {
-  width: 50%;
-}
-
-canvas {
-  width: 50%;
-}
-
-.red {
-  position: absolute;
-}
-</style>
+  }
