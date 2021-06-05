@@ -1,23 +1,60 @@
 const Util = {
-  keepInsideBoundary(x, w) {
+  keepInsideBoundary(xy, cd, sd) {
+    const cw = cd.w
+    const ch = cd.h
+    const sw = sd.w
+    const sh = sd.h
+
+    let x = xy.x
+    let y = xy.y
+
     // w - 1 to prevent x to exactly match the boundary
     // x can go negative or go beyond w (limit)
     // prevent both behavior
     let newX = x
-    let moved = 0
+    let newY = y
+    let xmoved = 0
+    let ymoved = 0
 
+    const wi = cw>sw ? Math.floor((cw-sw)/2) : 0
+    const hi = ch>sh ? Math.floor((ch-sh)/2) : 0
+
+    // Prevent x to go below zero
     if (x !== null && x < 0) {
       newX = 0
-      moved = x - 0
+      xmoved = -x // Return positive value for positive movement
     }
-    if (x > w) {
-      newX = w
-      moved = x - w
+    // Prevent y to go below zero
+    if (y !== null && y < 0) {
+      newY = 0
+      ymoved = -y
+    }
+
+    // Enforce   x >= wi
+    if (x < wi) {
+      newX = wi
+      xmoved = wi - x
+    }
+    // Enforce   x <= wi + sw
+    if (x > wi+sw) {
+      newX = wi+sw
+      xmoved = (wi+sw) - x
+    }
+
+    // Enforce   y >= hi
+    if (y < hi) {
+      newY = hi
+      ymoved = hi - y
+    }
+    // Enforce   y <= hi + sh
+    if (y > hi+sh) {
+      newY = hi+sh
+      ymoved = (hi+sh) - y
     }
 
     return {
-      value: newX,
-      moved: moved
+      value: [newX, newY],
+      moved: [xmoved, ymoved]
     }
   }  
 }
@@ -38,7 +75,8 @@ class SalientObjectDetection {
       this.tempCanvas = cfg.emptyCanvas
       this.callbackOnReticleXY = cfg.onReticleXYCallback
       this.workerInstance = cfg.workerInstance
-      
+      this.viewport = cfg.viewport
+
       this.performance = performance
 
       // Default config
@@ -63,16 +101,20 @@ class SalientObjectDetection {
 
     async workerMsgHandler(msg) {
       const t0 = this.performance.now()
+
+      // Get reticle XY position
       this.getReticleXY(msg)
+
       const t1 = this.performance.now()
 
-      const totalTime = msg.data.totalTime + (t0-t1)
+      // Add dynamic delay to match preferred FPS
+      const totalTime = msg.data.totalTime + (t1-t0)
       const fps = Math.floor(1000/totalTime)
-      const preferredFPS = 1
+      const preferredFPS = 2
 
       const delay = fps < preferredFPS ? (1000/fps) : ((1000/preferredFPS) - totalTime)
 
-      console.log('FPS: ', fps < preferredFPS ? fps : preferredFPS)
+      // console.log('FPS: ', fps < preferredFPS ? fps : preferredFPS)
       // console.log('delay: ', delay)
       await this.sleep(delay)
       this.imageBinarizer()
@@ -82,15 +124,12 @@ class SalientObjectDetection {
         let elWidth = e.target.clientWidth
         let elHeight = e.target.clientHeight
         
-        let canvasWidth = e.target.width
-        let canvasHeight = e.target.height
-  
         let posX = e.layerX
         let posY = e.layerY
-  
+
         this.lastXY = {
-          x: Math.round(posX * (canvasWidth / elWidth)),
-          y: Math.round(posY * (canvasHeight / elHeight))
+          x: Math.round(posX),
+          y: Math.round(posY)
         }
     }
 
@@ -163,19 +202,38 @@ class SalientObjectDetection {
         const salientCriteria = blkThreshSum > whtThreshSum ? 255 : 0;
 
         // first get XY of pixel in center of image
-        const width = binaryImage.width
-        const height = binaryImage.height
+        const cw = binaryImage.width
+        const ch = binaryImage.height
+        const sw = this.viewport[0]
+        const sh = this.viewport[1]
+
+        const wi = cw>sw ? (cw-sw)/2 : 0
+        const hi = ch>sh ? (ch-sh)/2 : 0
+
+        const wratio = cw/sw
+        const hratio = ch/sh
+
         const lastXY = (this.lastXY ? this.lastXY :
-                        {x: Math.round(width / 2), y: Math.round(height / 2)} )
+                        {x: Math.round(cw / 2), y: Math.round(ch / 2)} )
         
         this.lastXY = lastXY
 
         // =====================
         // Get Random Salient XY Position
         const salientXYPos = this.stochasticSalientXY(binaryImage, salientCriteria)
-        const salientXY = salientXYPos['salientXY']
 
-        this.lastXY = salientXY
+        // apply x,y ratio
+        const xmod = (x) => {
+          return ch<sh ? x-wi : x/wratio;
+        }
+        const ymod = (y) => {
+          return ch<sh ? y/hratio : y-hi;
+        }
+
+        salientXYPos.salientXY.x = xmod(salientXYPos.salientXY.x)
+        salientXYPos.salientXY.y = ymod(salientXYPos.salientXY.y)
+
+        this.lastXY = salientXYPos['salientXY']
 
         this.callbackOnReticleXY(salientXYPos)
     }
@@ -183,18 +241,26 @@ class SalientObjectDetection {
     stochasticSalientXY(imageData, salientCriteria) {
       const util = Util
       const nsThreshold = 0.5
-      const ns = new NeighborSaliency(imageData, salientCriteria, nsThreshold)
+      const ns = new NeighborSaliency(imageData, salientCriteria, nsThreshold, this.viewport)
 
       const imageWidth = imageData.width
       const imageHeight = imageData.height
+      const sw = this.viewport[0]
+      const sh = this.viewport[1]
 
-      const lastX = util.keepInsideBoundary(this.lastXY['x'], imageWidth).value
-      const lastY = util.keepInsideBoundary(this.lastXY['y'], imageHeight).value
+      let lastXY = util.keepInsideBoundary({
+        x: this.lastXY['x'],
+        y: this.lastXY['y']
+      }, {w: imageWidth, h: imageHeight}, {w: sw, h: sh})
+
+      const lastX = lastXY.value[0]
+      const lastY = lastXY.value[1]
 
       const maxIter = 250
       let iterCount = 0
       
       while(true) {
+
         iterCount += 1
 
         const {minX, minY, maxX, maxY} = ns.calcMinMaxBbox(lastX, lastY)
@@ -264,11 +330,15 @@ class SalientObjectDetection {
 
 class NeighborSaliency {
 
-  constructor(imageData, salientCriteria, nsThreshold) {
+  constructor(imageData, salientCriteria, nsThreshold, viewport) {
     
     this.imageData = imageData.data
     this.imageWidth = imageData.width
     this.imageHeight = imageData.height
+
+    this.viewportWidth = viewport[0]
+    this.viewportHeight = viewport[1]
+    // console.log('ns', viewport)
 
     this.salientCriteria = salientCriteria
     this.nsThreshold = nsThreshold
@@ -293,8 +363,12 @@ class NeighborSaliency {
 
     for (let i = 0; i<2*neighborRadius+1; i++) {
       for (let j = 0; j<2*neighborRadius+1; j++) {
-        let newX = util.keepInsideBoundary(nminx+i, width).value
-        let newY = util.keepInsideBoundary(nminy+j, height).value
+        const newXY = util.keepInsideBoundary({
+          x: nminx+i,
+          y: nminy+j
+        },{w: width, h: height}, {w: this.viewportWidth, h: this.viewportHeight})
+        let newX = newXY.value[0]
+        let newY = newXY.value[1]
         
         if (tempNghbrs.includes(newX+' '+newY))
         break;
@@ -342,29 +416,29 @@ class NeighborSaliency {
     let maxX = Math.round(x + bboxRadius)
     let maxY = Math.round(y + bboxRadius)
 
-    let maxXkib = util.keepInsideBoundary(maxX, width)
-    maxX = maxXkib.value
-    if (maxXkib.moved) {
-      minX -= maxXkib.moved
-    }
+    let max = util.keepInsideBoundary({
+      x: maxX,
+      y: maxY
+    },{w: width, h: height}, {w: this.viewportWidth, h: this.viewportHeight})
 
-    let minXkib = util.keepInsideBoundary(minX, width)
-    minX = minXkib.value
-    if (minXkib.moved) {
-      maxX -= minXkib.moved
-    }
+    // console.log('ccmbx', max)
 
-    let maxYkib = util.keepInsideBoundary(maxY, height)
-    maxY = maxYkib.value
-    if (maxYkib.moved) {
-      minX -= maxYkib.moved
-    }
+    maxX = max.value[0]
+    minX += max.moved[0]
 
-    let minYkib = util.keepInsideBoundary(minY, height)
-    minY = minYkib.value
-    if (minYkib.moved) {
-      maxX -= minYkib.moved
-    }
+    maxY = max.value[1]
+    minY += max.moved[1]
+
+    let min = util.keepInsideBoundary({
+      x: minX,
+      y: minY
+    },{w: width, h: height}, {w: this.viewportWidth, h: this.viewportHeight})
+    
+    minX = min.value[0]
+    maxX += min.moved[0]
+
+    minY = min.value[1]
+    maxY += min.moved[1]
 
     return {minX, minY, maxX, maxY}
   }

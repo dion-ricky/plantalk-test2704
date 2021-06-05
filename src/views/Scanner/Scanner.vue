@@ -1,6 +1,6 @@
 <template>
     <!-- Add scanner UI here and set higher z-index -->
-    <ScannerUI @capture:click="capture" @close:click="exitScanner" />
+    <ScannerUI @capture:click="capture" @close:click="exitScanner" @click="userAssist" />
     <div class="reticle-container">
         <Reticle width="250px" height="250px" ref="reticle" :state="reticle.state" />
     </div>
@@ -16,6 +16,7 @@ import ScannerCanvas from "./ScannerCanvas"
 import Reticle from "../../components/Scanner/Reticle"
 
 import SalientObjectDetection from "../../salient"
+import ScannerUtil from "./util"
 
 export default {
     name: "Scanner",
@@ -92,13 +93,17 @@ export default {
         exitScanner() {
             this.$router.go(-1)
         },
+        userAssist(e) {
+            this.sod.userAssist(e);
+        },
         onReticleXYCallback(reticleXYPos) {
+            // console.log(reticleXYPos)
             this.moveReticle(reticleXYPos.salientXY)
         },
         moveReticle(pos) {
             const reticle = this.reticleElement.$el;
-            const x = pos.x - 50;
-            const y = pos.y - 50;
+            const x = pos.x - 125;
+            const y = pos.y - 125;
 
             let transform = `translate(${x}px, ${y}px)`
             reticle.style.transform = transform;
@@ -135,7 +140,8 @@ export default {
                 videoRef            : this.$refs.player,
                 onReticleXYCallback : this.onReticleXYCallback,
                 workerInstance      : this.binarizerWorker,
-                emptyCanvas         : document.createElement('canvas')
+                emptyCanvas         : document.createElement('canvas'),
+                viewport            : ScannerUtil.getViewport()
             }, window.performance)
 
             this.binarizerWorker.onmessage = (e) => {

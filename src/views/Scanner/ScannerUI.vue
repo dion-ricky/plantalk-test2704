@@ -43,9 +43,11 @@ export default {
     },
     methods: {
         capture(e) {
+            e.stopPropagation()
             this.$emit('capture:click', e)
         },
         close(e) {
+            e.stopPropagation()
             this.$emit('close:click', e)
         }
     },

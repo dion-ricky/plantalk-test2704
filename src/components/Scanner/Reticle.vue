@@ -39,6 +39,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+    svg {
+        transition: transform ease-out 0.25s;
+    }
+
     svg > * {
         transform-origin: center center;
     }
