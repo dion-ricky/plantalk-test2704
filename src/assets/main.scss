@@ -10,7 +10,7 @@ html, body {
   color: #212121;
 }
 
-span.material-icons-outlined {
+*:not(input, textarea), span.material-icons-outlined {
   -webkit-tap-highlight-color: transparent;
   -webkit-touch-callout: none;
   -webkit-user-select: none;

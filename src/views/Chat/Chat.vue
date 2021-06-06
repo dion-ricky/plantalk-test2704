@@ -45,7 +45,10 @@ export default {
         defaultRedirect() {
             let currentPath = this.$route.path
             let currentRoute = this.$router.getRoutes().filter(route => route.path === currentPath)[0]
-            
+
+            this.chatTabActive = currentRoute.name.split('.')[1] === 'community'
+                                 ? 'Community' : 'Expert'
+
             if (currentRoute.name === 'chat') {
                 this.$router.push({name: 'chat.community'})
                 this.chatTabActive = 'Community'
@@ -71,6 +74,8 @@ export default {
 
     .chat-content {
         margin-top: 1.5rem;
+
+        padding-bottom: 10rem;
     }
 
     h1 {
