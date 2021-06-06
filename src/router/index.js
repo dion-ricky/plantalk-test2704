@@ -15,6 +15,7 @@ import Chat from "../views/Chat/Chat"
 import CommunityChat from "../views/Chat/Community"
 import ExpertChat from "../views/Chat/Expert"
 import ChatRoom from "../views/Chat/ChatRoom"
+import JoinPrompt from "../views/Chat/JoinPrompt"
 
 import Market from "../views/Market/Market"
 import PlantDetail from "../views/Market/PlantDetail"
@@ -95,6 +96,11 @@ const routes = [
         path: '/app/chat/room',
         name: 'chatroom',
         component: ChatRoom
+    },
+    {
+        path: '/app/chat/join',
+        name: 'chatjoin',
+        component: JoinPrompt
     },
     {
         path: '/app/plant/detail/:id',
