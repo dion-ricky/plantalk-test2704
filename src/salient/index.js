@@ -121,11 +121,28 @@ class SalientObjectDetection {
     }
 
     userAssist(e) {
-        let elWidth = e.target.clientWidth
-        let elHeight = e.target.clientHeight
+        const video = this.videoRef;
         
-        let posX = e.layerX
-        let posY = e.layerY
+        const cw = video.videoWidth;
+        const ch = video.videoHeight;
+        const sw = e.target.clientWidth
+        const sh = e.target.clientHeight
+
+        const wi = cw>sw ? (cw-sw)/2 : 0
+        const hi = ch>sh ? (ch-sh)/2 : 0
+
+        const wratio = cw/sw
+        const hratio = ch/sh
+
+        const xmapInv = (x) => {
+          return ch<sh ? x+wi : x*wratio;
+        }
+        const ymapInv = (y) => {
+          return ch<sh ? y*hratio : y+hi;
+        }
+        
+        let posX = xmapInv(e.layerX)
+        let posY = ymapInv(e.layerY)
 
         this.lastXY = {
           x: Math.round(posX),
@@ -217,23 +234,22 @@ class SalientObjectDetection {
                         {x: Math.round(cw / 2), y: Math.round(ch / 2)} )
         
         this.lastXY = lastXY
-
+        
         // =====================
         // Get Random Salient XY Position
         const salientXYPos = this.stochasticSalientXY(binaryImage, salientCriteria)
-
-        // apply x,y ratio
-        const xmod = (x) => {
+        this.lastXY = Object.assign({}, salientXYPos.salientXY)
+        
+        // apply x,y mapping function
+        const xmap = (x) => {
           return ch<sh ? x-wi : x/wratio;
         }
-        const ymod = (y) => {
+        const ymap = (y) => {
           return ch<sh ? y/hratio : y-hi;
         }
-
-        salientXYPos.salientXY.x = xmod(salientXYPos.salientXY.x)
-        salientXYPos.salientXY.y = ymod(salientXYPos.salientXY.y)
-
-        this.lastXY = salientXYPos['salientXY']
+        
+        salientXYPos.salientXY.x = xmap(salientXYPos.salientXY.x)
+        salientXYPos.salientXY.y = ymap(salientXYPos.salientXY.y)
 
         this.callbackOnReticleXY(salientXYPos)
     }
