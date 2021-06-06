@@ -10,7 +10,7 @@
 
 <script>
 export default {
-    name: "ChatListItem"
+    name: "CommunityChatListItem"
 }
 </script>
 

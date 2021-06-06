@@ -2,13 +2,13 @@
     <search v-model:searchInput="searchInput" placeholder="Find Topic or Community" />
 
     <div class="community-chat-list">
-        <chat-list-item @click="goToChatRoom" />
+        <community-chat-list-item @click="goToChatRoom" />
     </div>
 </template>
 
 <script>
 import Search from "../../components/Input/Search"
-import ChatListItem from "../../components/Chat/ChatListItem"
+import CommunityChatListItem from "../../components/Chat/CommunityChatListItem"
 
 export default {
     name: "CommunityChat",
@@ -17,7 +17,7 @@ export default {
     }),
     components: {
         Search,
-        ChatListItem
+        CommunityChatListItem
     },
     methods: {
         goToChatRoom() {

@@ -46,6 +46,11 @@ export default {
     name: "JoinPrompt",
     components: {
         Button
+    },
+    methods: {
+        goBack() {
+            this.$router.go(-1);
+        }
     }
 }
 </script>
