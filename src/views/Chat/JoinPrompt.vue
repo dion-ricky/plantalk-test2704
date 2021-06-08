@@ -1,5 +1,6 @@
 <template>
-    <div class="join-prompt-wrapper">
+    <loading-screen v-if="room === null" />
+    <div class="join-prompt-wrapper" v-if="room !== null">
         <div class="top-gradient"></div>
         <div class="nav-back">
             <span class="material-icons-round"
@@ -9,11 +10,11 @@
             </span>
         </div>
         <!-- photo -->
-        <img src="https://source.unsplash.com/1qfy-jDc_jo/640x405" alt="" class="chat-img">
+        <img :src="room.roomCoverImg" alt="" class="chat-img">
 
         <!-- name + desc -->
         <div class="details-wrapper">
-            <h1 class="chat-name">Sukulen Sidoarjo</h1>
+            <h1 class="chat-name">{{ room.roomName }}</h1>
             <h5 class="member-count">150 Members</h5>
             <p class="desc">
                 Welcome!!!
@@ -41,16 +42,73 @@
 
 <script>
 import Button from "../../components/Button"
+import LoadingScreen from "../../components/State/LoadingScreen"
+
+import PlantalkFirebase from "../../firebase"
 
 export default {
     name: "JoinPrompt",
     components: {
-        Button
+        Button,
+        LoadingScreen
     },
+    data: () => ({
+        room: null,
+        roomType: null,
+        roomId: null,
+        user: null,
+    }),
     methods: {
         goBack() {
             this.$router.go(-1);
+        },
+        join() {
+            const db = PlantalkFirebase.getDb();
+            const userUid = this.user.uid
+            const roomType = this.roomType
+            const roomId = this.roomId
+
+            const data = {
+                roomId: roomId
+            }
+
+            db.ref('users').child(userUid).child('room').child(roomType)
+            .push(data, (err) => {
+                if (err === null) {
+                    this.$router.push({name: 'chat'})
+                } else {
+                    console.log(err)
+                }
+            })
         }
+    },
+    created() {
+        const db = PlantalkFirebase.getDb();
+        const auth = PlantalkFirebase.getAuth().auth;
+
+        auth.onAuthStateChanged((user) => {
+            this.user = user;
+        })
+
+        const roomType = this.$route.params.type;
+        const roomId = this.$route.params.id;
+
+        this.roomType = roomType
+        this.roomId = roomId
+
+        if (!['community', 'expert'].includes(roomType)) {
+            this.$router.push({name: 'home'})
+        }
+
+        db.ref(roomType).child(roomId).once('value')
+        .then((s) => {
+            if (s.exists()) {
+                this.room = s.val()
+
+            } else {
+                this.$router.push({name: 'home'})
+            }
+        })
     }
 }
 </script>

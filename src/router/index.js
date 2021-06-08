@@ -24,6 +24,7 @@ import AfterPayment from "../views/Payment/AfterPayment"
 
 import Playground from "../views/dev/Playground"
 import InsertDb from "../views/dev/InsertDb"
+import CreateChat from "../views/dev/CreateChat"
 
 const routes = [
     {
@@ -93,12 +94,17 @@ const routes = [
         component: MyPlantDetail
     },
     {
-        path: '/app/chat/room',
-        name: 'chatroom',
+        path: '/app/chat/community/room/:id',
+        name: 'chat.community.room',
         component: ChatRoom
     },
     {
-        path: '/app/chat/join',
+        path: '/app/chat/expert/room/:id',
+        name: 'chat.expert.room',
+        component: ChatRoom
+    },
+    {
+        path: '/app/chat/join/:type/:id',
         name: 'chatjoin',
         component: JoinPrompt
     },
@@ -115,6 +121,11 @@ const routes = [
         path: '/dev/insert/db',
         name: 'insertdb',
         component: InsertDb
+    },
+    {
+        path: '/dev/chat',
+        name: 'devchat',
+        component: CreateChat
     },
     {
         path: '/:catchAll(.*)',

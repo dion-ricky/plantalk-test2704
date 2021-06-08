@@ -1,10 +1,8 @@
 <template>
     <div v-if="!isOut" class="bubble-in">
-        <div class="cb-avatar">
-            <img src="https://source.unsplash.com/rDEOVtE7vOs/640x426" alt="">
-        </div>
-        
+
         <div class="cb-msg-wrapper">
+            <p class="sender-name">{{username}}</p>
             <div class="bubble-msg">
                 {{message}}
             </div>
@@ -33,7 +31,12 @@ export default {
         isOut: Boolean,
         message: String,
         time: String,
-    }
+        username: String,
+    },
+    mounted() {
+        this.$emit('cbMounted')
+    },
+    emits: ['cbMounted']
 }
 </script>
 
@@ -100,6 +103,15 @@ export default {
     .msg-time {
         font-size: 0.8rem;
         color: #A3A3A3;
+    }
+
+    .sender-name {
+        margin: 0;
+        margin-left: .5rem;
+        margin-bottom: .25rem;
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: #414141;
     }
 
 </style>

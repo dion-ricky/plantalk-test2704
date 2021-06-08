@@ -84,11 +84,6 @@ export default {
 		})
     }
 	// end service worker update detection
-
-	const auth = PlantalkFirebase.getAuth().auth
-	auth.onAuthStateChanged((user) => {
-		console.log(user)
-	})
   },
 };
 </script>
