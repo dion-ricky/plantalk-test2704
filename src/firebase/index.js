@@ -25,21 +25,15 @@ class PlantalkFirebase {
     }
 
     getMessaging() {
-        return this.messaging ? this.messaging : this.newMessaging()
-    }
-
-    newMessaging() {
-        this.messaging = new PlantalkMessaging(firebase)
+        this.messaging = this.messaging ? this.messaging
+                         : new PlantalkMessaging(firebase)
         return this.messaging
     }
 
     getAuth() {
-        return this.auth ? this.auth : this.initAuth()
-    }
-
-    initAuth() {
-        this.auth = new PlantalkAuth(firebase)
-        return this.auth
+        this.auth = this.auth ? this.auth
+                    : new PlantalkAuth(firebase)
+        return  this.auth
     }
 
     getDb() {

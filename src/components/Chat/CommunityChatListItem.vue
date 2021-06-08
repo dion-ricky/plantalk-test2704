@@ -1,8 +1,8 @@
 <template>
     <div class="chat-list-item-wrapper">
-        <img src="https://source.unsplash.com/1qfy-jDc_jo/640x405" alt="" class="chat-img">
+        <img :src="room.roomCoverImg" alt="" class="chat-img">
         <div class="chat-details">
-            <h3>Sukulen Sidoarjo</h3>
+            <h3>{{ room.roomName }}</h3>
             <p>50 Members</p>
         </div>
     </div>
@@ -10,7 +10,10 @@
 
 <script>
 export default {
-    name: "CommunityChatListItem"
+    name: "CommunityChatListItem",
+    props: {
+        room: Object
+    }
 }
 </script>
 
@@ -20,6 +23,7 @@ export default {
     .chat-list-item-wrapper {
         display: grid;
         grid-template-columns: 75px 1fr;
+        grid-template-rows: repeat(auto-fit, 75px);
         column-gap: .5rem;
 
         font-family: $body-font-stack;
@@ -36,7 +40,7 @@ export default {
 
         h3 {
             font-weight: 600;
-            margin-top: 0.5rem;
+            margin-top: 0rem;
             margin-bottom: 0.5rem;
         }
         
