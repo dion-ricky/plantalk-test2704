@@ -96,8 +96,11 @@ export default {
         setActiveNavItem() {
             // Set current active navigation item
             // by inferring from path
+            
             let currentPath = this.$route.path
-            let currentRoute = this.$router.getRoutes().filter(route => route.path === currentPath)[0]
+            currentPath = currentPath.endsWith('/') ? currentPath.slice(0, -1) : currentPath
+            let currentRoute = this.$router.getRoutes()
+                                .filter(route => route.path === currentPath)[0]
 
             let l = currentRoute.name.indexOf(".")
             l = l === -1 ? currentRoute.name.length : l

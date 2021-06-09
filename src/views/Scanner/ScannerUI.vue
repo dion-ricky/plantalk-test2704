@@ -4,7 +4,7 @@
         <div class="top-action">
             <div class="action-grouping">
                 <div class="close">
-                    <icon-button>
+                    <icon-button @iconbtn:click="close">
                         <span class="material-icons-outlined">close</span>
                     </icon-button>
                 </div>
@@ -43,10 +43,15 @@ export default {
     },
     methods: {
         capture(e) {
+            e.stopPropagation()
             this.$emit('capture:click', e)
+        },
+        close(e) {
+            e.stopPropagation()
+            this.$emit('close:click', e)
         }
     },
-    emits: ['capture:click']
+    emits: ['capture:click', 'close:click']
 }
 </script>
 

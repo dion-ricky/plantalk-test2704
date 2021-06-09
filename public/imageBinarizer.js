@@ -10,8 +10,6 @@ onmessage = (e) => {
         const grayscaleImage = grayscale['grayscale']
 
         const binary = toBinary(imageWidth, imageHeight, hist, grayscaleImage.data)
-        
-        // get xy pos for Reticle
 
         postMessage({
             'binary': binary['binarized'],

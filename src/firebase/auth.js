@@ -29,6 +29,16 @@ class PlantalkAuth {
         });
     }
 
+    signOut() {
+        return new Promise((res, rej) => {
+            this.auth.signOut().then(() => {
+                res();
+            }).catch((err) => {
+                rej(err);
+            })
+        })
+    }
+
     getCurrentUser() {
         return this.auth.currentUser;
     }

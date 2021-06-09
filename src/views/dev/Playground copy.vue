@@ -39,7 +39,7 @@
 
 <script>
 import PlantalkCamera from "../../camera";
-import Reticle from "../../assets/plantalk/scanner/reticle";
+import Reticle from "../../components/Scanner/Reticle";
 import Banner from "../../components/Banner";
 
 import { Swiper, SwiperSlide } from "swiper/vue";
