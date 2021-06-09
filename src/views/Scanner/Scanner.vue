@@ -1,11 +1,13 @@
 <template>
     <!-- Add scanner UI here and set higher z-index -->
-    <ScannerUI @capture:click="capture" @close:click="exitScanner" @click="userAssist" />
+    <ScannerUI
+        @capture:click="capture"
+        @close:click="exitScanner"
+        @ui:mounted="scannerUIMounted"
+        @click="userAssist" />
     <div class="reticle-container">
-        <Reticle width="250px" height="250px" ref="reticle" :state="reticle.state" />
+        <Reticle width="250px" height="250px" ref="reticle" class="reticle" :state="reticle.state" />
     </div>
-    <!-- <ScannerCanvas :imageBitmap="imageBitmap" /> -->
-    <!-- <canvas ref="scannerCanvas"></canvas> -->
     <video ref="player" :srcObject="stream" autoplay></video>
 </template>
 
@@ -28,13 +30,13 @@ export default {
     data: () => ({
         camera: PlantalkCamera,
         sod: SalientObjectDetection,
+        thumbCanvasRef: null,
         stream: null,
         isTorchOn: false,
-        imageBitmap: null,
-        canvas: null,
-        canvasCtx: null,
         reticle: {
-            state: 'sensing'
+            state: 'sensing',
+            lastPos: {x: 0, y: 0},
+            notMoving: 0
         }
     }),
     methods: {
@@ -84,11 +86,11 @@ export default {
             })
         },
         capture() {
-            let frameData = sod.getFrame()
+            // let frameData = sod.getFrame()
 
-            this.canvas.width = frameData.imageWidth
-            this.canvas.height = frameData.imageHeight
-            this.canvasCtx.putImageData(new ImageData(frameData.frameData, frameData.imageWidth), 0, 0)
+            // this.canvas.width = frameData.imageWidth
+            // this.canvas.height = frameData.imageHeight
+            // this.canvasCtx.putImageData(new ImageData(frameData.frameData, frameData.imageWidth), 0, 0)
         },
         exitScanner() {
             this.$router.go(-1)
@@ -102,11 +104,82 @@ export default {
         },
         moveReticle(pos) {
             const reticle = this.reticleElement.$el;
+
+            if (reticle.style.opacity == 0) {
+                reticle.style.opacity = 100;
+            }
+
             const x = pos.x - 125;
             const y = pos.y - 125;
 
+            // check if reticle position has changed
+            // if not changed, send image to vision API
+            if (ScannerUtil.isReticleNotMoving(this.reticle.lastPos, {x, y})) {
+                this.reticle.notMoving += 1
+
+                if (this.reticle.notMoving < 6) {
+                    return;
+                }
+
+                this.reticle.notMoving = 0;
+                this.reticle.state = 'loading'
+
+                // capture image and prepare to send to vision api
+                this.classify(pos)
+            } else {
+                this.reticle.notMoving = 0;
+                this.reticle.state = 'sensing'
+            }
+
+            this.reticle.lastPos.x = x;
+            this.reticle.lastPos.y = y;
+
             let transform = `translate(${x}px, ${y}px)`
             reticle.style.transform = transform;
+        },
+        classify(currentXY) {
+            // capture image and prepare to send to vision api
+            const viewport = ScannerUtil.getViewport();
+            const imageWidth = Math.floor((0.3 * viewport[0]))
+            const imageHeight = imageWidth
+            const thumbCanvas = this.thumbCanvasRef
+            thumbCanvas.width = imageWidth
+            thumbCanvas.height = imageHeight
+
+            const video = this.$refs.player
+            const cw = video.videoWidth
+            const ch = video.videoHeight
+            const sw = viewport[0]
+            const sh = viewport[1]
+
+            const wi = cw>sw ? (cw-sw)/2 : 0
+            const hi = ch>sh ? (ch-sh)/2 : 0
+
+            const wratio = cw/sw
+            const hratio = ch/sh
+
+            const xmapInv = (x) => {
+                return ch<sh ? x+wi : x*wratio;
+            }
+            const ymapInv = (y) => {
+                return ch<sh ? y*hratio : y+hi;
+            }
+
+            const x = Math.floor(xmapInv(currentXY.x - (0.5 * imageWidth)))
+            const y = Math.floor(ymapInv(currentXY.y - (0.5 * imageHeight)))
+
+            let imageData = this.sod.getFrame(imageWidth, imageHeight, x, y); // capture from canvas
+            imageData = new ImageData(imageData.frameData, imageData.imageWidth)
+
+            // console.log(imageFrame)
+            thumbCanvas.getContext('2d').putImageData(imageData, 0, 0)
+            console.log(thumbCanvas.toDataURL('image/png'))
+        },
+        classifyImage() {
+            // send to vision API
+        },
+        scannerUIMounted(data) {
+            this.thumbCanvasRef = data.thumbCanvasRef;
         }
     },
     beforeUnmount() {
@@ -123,17 +196,13 @@ export default {
         });
 
         if (window.Worker) {
-            const worker = new Worker("/imageBinarizer.js");
+            const worker = new Worker("/ScannerReticle.js");
 
             this.binarizerWorker = worker;
         }
     },
     mounted() {
         this.$nextTick(() => {
-            // const canvas = this.$refs.scannerCanvas
-            // const canvasCtx = canvas.getContext('2d')
-            // this.canvas = canvas
-            // this.canvasCtx = canvasCtx
             this.reticleElement = this.$refs.reticle
 
             this.sod = new SalientObjectDetection({
@@ -178,4 +247,10 @@ canvas {
     height: 100vh;
     z-index: 5;
 }
+
+.reticle {
+    opacity: 0;
+    transition: opacity ease-out .5s;
+}
+
 </style>

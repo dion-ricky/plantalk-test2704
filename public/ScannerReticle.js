@@ -18,6 +18,8 @@ onmessage = (e) => {
             'threshold': binary['threshold'],
             'totalTime': grayscale['time'] + binary['time']
         })
+    } else if (e.data['action'] === 'classify') {
+        
     }
 }
 

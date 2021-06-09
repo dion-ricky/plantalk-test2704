@@ -21,6 +21,16 @@
                 </div>
             </div>
         </div>
+
+        <div class="classify-wrapper">
+            <div class="thumbnail-wrapper">
+                <canvas ref="thumbCanvas">
+                </canvas>
+            </div>
+            <div class="predicted-wrapper">
+
+            </div>
+        </div>
     </div>
 </template>
 
@@ -51,7 +61,12 @@ export default {
             this.$emit('close:click', e)
         }
     },
-    emits: ['capture:click', 'close:click']
+    mounted() {
+        this.$emit('ui:mounted', {
+            thumbCanvasRef: this.$refs.thumbCanvas
+        })
+    },
+    emits: ['capture:click', 'close:click', 'ui:mounted']
 }
 </script>
 
@@ -78,6 +93,28 @@ export default {
     display: flex;
     margin: 1.5rem .5rem;
     justify-content: space-between;
+}
+
+
+.classify-wrapper {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    z-index: 11;
+
+    padding: 1rem 1.5rem;
+
+    .thumbnail-wrapper {
+        width: 30vw;
+        height: 30vw;
+        border: 2px solid white;
+        border-radius: 12px;
+
+        canvas {
+            width: 100%;
+            border-radius: 12px;
+        }
+    }
 }
 
 span.material-icons-outlined {
