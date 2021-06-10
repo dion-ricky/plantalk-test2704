@@ -10,7 +10,7 @@ const express = require('express')
 const axios = require('axios')
 const cors = require('cors')
 const app = express()
-const port = 8082
+// const port = 8082
 
 app.use(cors())
 
@@ -20,9 +20,9 @@ app.post('/', (req, res) => {
     paymentNotificationHandler(req, res)
 })
 
-app.listen(port,() => {
-    console.log('Payment notification started')
-})
+// app.listen(port,() => {
+//     console.log('Payment notification started')
+// })
 
 exports.midtrans_paymentNotification = app
 
@@ -48,6 +48,7 @@ const paymentNotificationHandler = (req, res) => {
 
     getPaymentStatus(req).then((status) => {
         if (status === 1) {
+            console.error('Transaction is settled, terminating.')
             return;
         }
 
