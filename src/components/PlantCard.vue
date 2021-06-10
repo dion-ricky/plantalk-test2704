@@ -43,6 +43,8 @@ export default {
 
     .card-img {
         width: 100%;
+        height: 105px;
+        object-fit: cover;
         border-top-left-radius: 12px;
         border-top-right-radius: 12px;
     }
