@@ -183,7 +183,6 @@ class PlantalkMidtransPaymentVerifier {
 
         // Verify payment status
         verified.push(
-            this.data.transaction_status === 'capture' ||
             this.data.transaction_status === 'settlement'
         )
 
