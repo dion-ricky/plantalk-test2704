@@ -10,7 +10,7 @@
                 <span class="material-icons-outlined">favorite_border</span>
             </div>
             <div class="img">
-                <img :src="data.detailThumbnail" alt="" srcset="">
+                <img :src="data.thumbnail" alt="" srcset="">
             </div>
         </div>
         <div class="plant-care">
@@ -151,6 +151,8 @@ export default {
 
         img {
             width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
     }
 

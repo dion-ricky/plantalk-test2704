@@ -6,7 +6,11 @@
                     <p class="salutation">Good Morning</p>
                     <p class="name">{{ user.name }}</p>
                 </div>
-                <avatar :bgColor="avatar.bgColor" :text="avatar.text" :text-color="avatar.textColor" />
+                <avatar
+                    :bgColor="avatar.bgColor"
+                    :text="avatar.text"
+                    :text-color="avatar.textColor"
+                    @click="signOut" />
             </div>
             <search-scan placeholder="Find Plant" />
             <points />
@@ -93,6 +97,15 @@ export default {
             }
 
             this.avatar.bgColor = colors[calculateColor(uid)]
+        },
+        signOut() {
+            PlantalkFirebase.getAuth().signOut()
+                .then(() => {
+                    this.$router.push({name: 'Login'})
+                })
+                .catch((err) => {
+                    console.log(err)
+                });
         }
     },
     created() {
