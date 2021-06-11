@@ -24,6 +24,13 @@ function getViewport() {
     return [viewPortWidth, viewPortHeight];
 }
 
+function isReticleNotMoving(lastXY, currentXY) {
+    let moveX = Math.abs(currentXY.x - lastXY.x)
+    let moveY = Math.abs(currentXY.y - lastXY.y)
+
+    return (moveX <= 15) && (moveY <= 15);
+}
+
 export default {
-    getViewport
+    getViewport, isReticleNotMoving
 }

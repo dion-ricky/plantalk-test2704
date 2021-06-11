@@ -10,7 +10,7 @@ const express = require('express')
 const axios = require('axios')
 const cors = require('cors')
 const app = express()
-const port = 8082
+// const port = 8082
 
 app.use(cors())
 
@@ -20,9 +20,9 @@ app.post('/', (req, res) => {
     paymentNotificationHandler(req, res)
 })
 
-app.listen(port,() => {
-    console.log('Payment notification started')
-})
+// app.listen(port,() => {
+//     console.log('Payment notification started')
+// })
 
 exports.midtrans_paymentNotification = app
 
@@ -48,6 +48,7 @@ const paymentNotificationHandler = (req, res) => {
 
     getPaymentStatus(req).then((status) => {
         if (status === 1) {
+            console.error('Transaction is settled, terminating.')
             return;
         }
 
@@ -109,47 +110,20 @@ const updateUserOwnedPlants = (req) => {
     const data = req.body.order_id
 
     let uid = data.split('.')[0]
-    let order_id = data.split('.')[1]
 
-    const boughtPlants = getBoughtPlants(req)
-    const previouslyOwnedPlants = getPreviouslyOwnedPlants(uid)
-
-    Promise.all([boughtPlants, previouslyOwnedPlants])
-        .then((values) => {
-            let boughtPlants = values[0]
-            let previouslyOwnedPlants = values[1]
-
-            console.log(values)
-            
-            let ownedPlants = previouslyOwnedPlants ? previouslyOwnedPlants.concat(boughtPlants) : boughtPlants
-        
+    getBoughtPlants(req)
+    .then((boughtPlants) => {
+        boughtPlants.forEach((v, i) => {
             const db = admin.database()
-            db.ref('users').child(uid)
-                .update({
-                    owned_plants: ownedPlants
-                })
-        })
-        .catch((err) => {
-            console.error(err)
-        })
-}
-
-const getPreviouslyOwnedPlants = (uid) => {
-    const db = admin.database()
-
-    return new Promise((res, rej) => {
-        db.ref('users').child(uid).child('owned_plants')
-            .once('value')
-            .then((s) => {
-                if (s.exists()) {
-                    res(s.val())
-                } else {
-                    res(null)
-                }
+            db.ref('users').child(uid).child('owned_plants')
+            .push({
+                plant_id: v,
+                timestamp: req.body.transaction_time
             })
-            .catch((err) => {
-                rej(err)
-            })
+        })
+    })
+    .catch((err) => {
+        console.error(err);
     })
 }
 
@@ -209,7 +183,6 @@ class PlantalkMidtransPaymentVerifier {
 
         // Verify payment status
         verified.push(
-            this.data.transaction_status === 'capture' ||
             this.data.transaction_status === 'settlement'
         )
 
