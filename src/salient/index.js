@@ -121,6 +121,10 @@ class SalientObjectDetection {
     }
 
     userAssist(e) {
+        if (this.stopFlag) {
+          return;
+        }
+        
         const video = this.videoRef;
         
         const cw = video.videoWidth;
@@ -169,11 +173,13 @@ class SalientObjectDetection {
       })
     }
 
-    getFrame() {
+    getFrame(width, height, x, y) {
         const video = this.videoRef;
 
-        const imageWidth = video.videoWidth;
-        const imageHeight = video.videoHeight;
+        const imageWidth = width || video.videoWidth;
+        const imageHeight = height || video.videoHeight;
+        x = x || 0
+        y = y || 0
 
         if (imageWidth === 0 || imageHeight === 0) {
           throw new CameraNotReadyError('Camera is not ready')
@@ -181,15 +187,15 @@ class SalientObjectDetection {
 
         const canvas = this.tempCanvas;
 
-        canvas.width = imageWidth;
-        canvas.height = imageHeight;
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
 
-        canvas.getContext("2d").drawImage(video, 0, 0, imageWidth, imageHeight);
+        canvas.getContext("2d").drawImage(video, 0, 0, video.videoWidth, video.videoHeight);
 
         this.tempCanvas = canvas
 
         return {
-            'frameData': canvas.getContext('2d').getImageData(0, 0, imageWidth, imageHeight).data,
+            'frameData': canvas.getContext('2d').getImageData(x, y, imageWidth, imageHeight).data,
             'imageWidth': imageWidth,
             'imageHeight': imageHeight
         }
@@ -246,6 +252,10 @@ class SalientObjectDetection {
         }
         const ymap = (y) => {
           return ch<sh ? y/hratio : y-hi;
+        }
+
+        if (salientXYPos.salientXY === null) {
+          return;
         }
         
         salientXYPos.salientXY.x = xmap(salientXYPos.salientXY.x)
