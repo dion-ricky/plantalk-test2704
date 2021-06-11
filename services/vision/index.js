@@ -27,8 +27,7 @@ class VisionLabeling {
         this.req = req;
 
         this.predictCallback = (prediction) => {
-            console.log(prediction)
-            res.status(200).send(prediction.labelAnnotations)
+            res.status(200).send(prediction)
         }
     }
 
