@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - services
+      - master
 
 jobs:
   build:

@@ -20,9 +20,9 @@ app.post('/', (req, res) => {
     paymentNotificationHandler(req, res)
 })
 
-// app.listen(port,() => {
-//     console.log('Payment notification started')
-// })
+app.listen(port,() => {
+    console.log('Payment notification started')
+})
 
 exports.midtrans_paymentNotification = app
 
@@ -46,9 +46,18 @@ const paymentNotificationHandler = (req, res) => {
         res.sendStatus(200) // respond midtrans with success, but process the payment further
     }
 
-    updateOrderPaymentStatus(req)
+    getPaymentStatus(req).then((status) => {
+        if (status === 1) {
+            return;
+        }
 
-    updateUserOwnedPlants(req)
+        updateOrderPaymentStatus(req)
+    
+        updateUserOwnedPlants(req)
+    })
+    .catch((err) => {
+        console.error(err)
+    })
 
     // Respond with 200 OK
     res.sendStatus(200)
@@ -62,8 +71,8 @@ const updateOrderPaymentStatus = (req) => {
         order_id: body.order_id,
     }
 
-    let uid = data.order_id.substring(0, data.order_id.indexOf('.'))
-    let order_id = data.order_id.substring(data.order_id.indexOf('.')+1)
+    let uid = data.order_id.split('.')[0]
+    let order_id = data.order_id.split('.')[1]
 
     const db = admin.database()
     db.ref('orders').child(uid).child(order_id)
@@ -72,11 +81,35 @@ const updateOrderPaymentStatus = (req) => {
         })
 }
 
+const getPaymentStatus = (req) => {
+    const body = req.body.order_id
+
+    let uid = body.split('.')[0]
+    let order_id = body.split('.')[1]
+
+    const db = admin.database()
+
+    return new Promise((res, rej) => {
+        db.ref('orders').child(uid).child(order_id)
+            .once('value').then((s) => {
+                if (s.exists()) {
+                    res(s.val().paymentStatus)
+                } else {
+                    rej(new Error("Reference doesn't exists"))
+                }
+            })
+            .catch((err) => {
+                console.error(err)
+            })
+    })
+
+}
+
 const updateUserOwnedPlants = (req) => {
     const data = req.body.order_id
 
-    let uid = data.substring(0, data.indexOf('.'))
-    let order_id = data.substring(data.indexOf('.')+1)
+    let uid = data.split('.')[0]
+    let order_id = data.split('.')[1]
 
     const boughtPlants = getBoughtPlants(req)
     const previouslyOwnedPlants = getPreviouslyOwnedPlants(uid)
@@ -96,7 +129,9 @@ const updateUserOwnedPlants = (req) => {
                     owned_plants: ownedPlants
                 })
         })
-
+        .catch((err) => {
+            console.error(err)
+        })
 }
 
 const getPreviouslyOwnedPlants = (uid) => {
@@ -120,9 +155,9 @@ const getPreviouslyOwnedPlants = (uid) => {
 
 const getBoughtPlants = (req) => {
     const data = req.body.order_id
-
-    let uid = data.substring(0, data.indexOf('.'))
-    let order_id = data.substring(data.indexOf('.')+1)
+    
+    let uid = data.split('.')[0]
+    let order_id = data.split('.')[1]
 
     const db = admin.database()
 
