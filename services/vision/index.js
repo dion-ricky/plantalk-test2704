@@ -11,17 +11,18 @@ app.post('/', (req, res) => {
     // console.log('oh hey');
     // console.log(Buffer.from(req.body.image, "base64"))
     // res.sendStatus(200);
-    const vision = new VisionLabeling(req, res);
+    // console.log(Buffer.from(req.body.image, "base64").toString("base64"))
+    const vision = new AutoMLPrediction(req, res);
     vision.predict();
 })
 
-// app.listen(port,() => {
-//     console.log('Vision prediction started', port)
-// })
+app.listen(port,() => {
+    console.log('Vision prediction started', port)
+})
 
 exports.visionLabeling = app
 
-class VisionLabeling {
+class AutoMLPrediction {
     
     constructor(req, res) {
         this.req = req;
@@ -29,25 +30,44 @@ class VisionLabeling {
         this.predictCallback = (prediction) => {
             res.status(200).send(prediction)
         }
+
+        this.errorCallback = (error) => {
+            res.status(500).send(error)
+        }
     }
 
     predict() {
-        const base64Image = this.req.body.image
-        const vision = require('@google-cloud/vision');
+        const C = {
+            project_id: 'plantalk-test2704',
+            location: 'us-central1',
+            modelId: 'ICN718365922007449600'
+        }
+
+        const base64Image = this.req.body.image.replace(/^data:image\/(png|gif|jpeg);base64,/,'');
+        const {PredictionServiceClient} = require('@google-cloud/automl').v1;
         
-        const client = new vision.ImageAnnotatorClient();
+        const client = new PredictionServiceClient();
         
         const buffer = Buffer.from(base64Image, "base64");
-        
-        client.labelDetection({
-            image: {
-                content: buffer
+
+        const request = {
+            name: client.modelPath(C.project_id, C.location, C.modelId),
+            payload: {
+                image: {
+                    imageBytes: buffer
+                }
+            },
+            params: {
+                score_threshold: '0.7'
             }
-        }).then((response) => {
+        }
+
+        client.predict(request).then((response) => {
             this.predictCallback(response);
         })
         .catch((err) => {
             console.error(err);
+            this.errorCallback(err);
         })
     }
 }
