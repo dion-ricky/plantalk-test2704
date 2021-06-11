@@ -22,6 +22,8 @@ import Reticle from "../../components/Scanner/Reticle"
 import SalientObjectDetection from "../../salient"
 import ScannerUtil from "./util"
 
+import ScannerController from "../../controller/scanner"
+
 export default {
     name: "Scanner",
     components: {
@@ -39,7 +41,14 @@ export default {
         isTorchOn: false,
         predicted: {
             class: '',
-            plant_id: ''
+            plant_id: '',
+            isError: false
+        },
+        classPlantPair: {
+            'aglaonema': '-MbnoBuePrOqNlkdw8QO',
+            'aloe vera': '-MbnoBuhLL9gvdj48GzM',
+            'burros tail': '-MbnoBui5DCaoGMPewa3',
+            'snake plant': '-MbnoBujrQHHOWVOtR2Q'
         },
         reticle: {
             state: 'sensing',
@@ -130,7 +139,7 @@ export default {
                 }
 
                 this.reticle.notMoving = 0;
-                this.reticle.state = 'loading'
+                this.predictingUI();
 
                 // stop getting new reticle position
                 this.sod.stopFlag = true;
@@ -140,9 +149,7 @@ export default {
                 this.classify(pos)
             } else {
                 this.reticle.notMoving = 0;
-                this.reticle.state = 'sensing'
-                this.toggleThumbCanvas(false);
-                this.togglePredicted(false);
+                this.scanningUI();
             }
 
             this.reticle.lastPos.x = x;
@@ -154,7 +161,7 @@ export default {
         classify(currentXY) {
             // capture image and prepare to send to vision api
             const viewport = ScannerUtil.getViewport();
-            const imageWidth = Math.floor((0.3 * viewport[0]))
+            const imageWidth = Math.floor((0.4 * viewport[0]))
             const imageHeight = imageWidth
             const thumbCanvas = this.thumbCanvasRef
             thumbCanvas.width = imageWidth
@@ -191,8 +198,38 @@ export default {
             // console.log(thumbCanvas.toDataURL('image/png'))
         },
         classifyImage() {
+            let base64Image = this.thumbCanvasRef.toDataURL('image/png')
+
+            const toTitleCase = (str) => {
+                return str.replace(
+                    /\w\S*/g,
+                    function(txt) {
+                    return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+                    }
+                );
+            }
+
             // send to vision API
-            setTimeout(() => {this.togglePredicted(true)}, 1000);
+            ScannerController.sendImageToVision(base64Image)
+            .then((response) => {
+                const data = response.data[0]
+
+                if (data.payload === null || data.payload.length === 0) {
+                    throw new Error('Image prediction error');
+                }
+
+                let prediction = data.payload[0]
+                
+                this.predicted = {
+                    class: toTitleCase(prediction.displayName),
+                    plant_id: this.classPlantPair[prediction.displayName]
+                }
+                this.predictedUI();
+            })
+            .catch((err) => {
+                console.error(err)
+                this.errorUI();
+            })
         },
         scannerUIMounted(data) {
             this.thumbCanvasRef = data.thumbCanvasRef;
@@ -200,8 +237,32 @@ export default {
             this.togglePredicted = data.togglePredicted;
         },
         rescan() {
+            this.predicted.class = '';
+            this.predicted.isError = false;
+            this.reticle.state = 'sensing';
+
             this.sod.stopFlag = false;
             this.sod.init();
+        },
+        scanningUI() {
+            this.toggleThumbCanvas(false);
+            this.togglePredicted(false);
+        },
+        predictingUI() {
+            this.reticle.state = 'loading';
+        },
+        predictedUI() {
+            const reticle = this.reticleElement.$el;
+            reticle.style.opacity = 0;
+            this.
+
+            this.togglePredicted(true);
+        },
+        errorUI() {
+            this.reticle.state = 'error';
+            this.predicted.class = "Can't classify image, please try again"
+            this.predicted.isError = true;
+            this.togglePredicted(true);
         }
     },
     beforeUnmount() {
