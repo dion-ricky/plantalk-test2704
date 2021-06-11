@@ -1,8 +1,10 @@
 <template>
     <!-- Add scanner UI here and set higher z-index -->
     <ScannerUI
+        :predicted="predicted"
         @capture:click="capture"
         @close:click="exitScanner"
+        @retry:click="rescan"
         @ui:mounted="scannerUIMounted"
         @click="userAssist" />
     <div class="reticle-container">
@@ -31,8 +33,14 @@ export default {
         camera: PlantalkCamera,
         sod: SalientObjectDetection,
         thumbCanvasRef: null,
+        toggleThumbCanvas: Object,
+        togglePredicted: Object,
         stream: null,
         isTorchOn: false,
+        predicted: {
+            class: '',
+            plant_id: ''
+        },
         reticle: {
             state: 'sensing',
             lastPos: {x: 0, y: 0},
@@ -124,11 +132,17 @@ export default {
                 this.reticle.notMoving = 0;
                 this.reticle.state = 'loading'
 
+                // stop getting new reticle position
+                this.sod.stopFlag = true;
+
                 // capture image and prepare to send to vision api
+                this.toggleThumbCanvas(true);
                 this.classify(pos)
             } else {
                 this.reticle.notMoving = 0;
                 this.reticle.state = 'sensing'
+                this.toggleThumbCanvas(false);
+                this.togglePredicted(false);
             }
 
             this.reticle.lastPos.x = x;
@@ -173,13 +187,21 @@ export default {
 
             // console.log(imageFrame)
             thumbCanvas.getContext('2d').putImageData(imageData, 0, 0)
-            console.log(thumbCanvas.toDataURL('image/png'))
+            this.classifyImage();
+            // console.log(thumbCanvas.toDataURL('image/png'))
         },
         classifyImage() {
             // send to vision API
+            setTimeout(() => {this.togglePredicted(true)}, 1000);
         },
         scannerUIMounted(data) {
             this.thumbCanvasRef = data.thumbCanvasRef;
+            this.toggleThumbCanvas = data.toggleThumbCanvas;
+            this.togglePredicted = data.togglePredicted;
+        },
+        rescan() {
+            this.sod.stopFlag = false;
+            this.sod.init();
         }
     },
     beforeUnmount() {

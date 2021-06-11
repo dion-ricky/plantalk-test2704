@@ -121,6 +121,10 @@ class SalientObjectDetection {
     }
 
     userAssist(e) {
+        if (this.stopFlag) {
+          return;
+        }
+        
         const video = this.videoRef;
         
         const cw = video.videoWidth;
