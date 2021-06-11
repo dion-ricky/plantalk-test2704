@@ -30,7 +30,7 @@
             <div class="predicted-wrapper" ref="predictedWrapper">
                 <div class="pw-flex" @click="goToPlantDetail(predicted.plant_id)">
                     <p class="predicted-class">{{ predicted.class }}</p>
-                    <span class="material-icons-outlined">chevron_right</span>
+                    <span class="material-icons-outlined" v-if="!predicted.isError">chevron_right</span>
                 </div>
                 <div class="retry" @click="$emit('retry:click', e)">
                     <Button text="RETRY" variant="" />
