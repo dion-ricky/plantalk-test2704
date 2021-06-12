@@ -58,7 +58,7 @@ class AutoMLPrediction {
                 }
             },
             params: {
-                score_threshold: '0.7'
+                score_threshold: '0.5'
             }
         }
 
