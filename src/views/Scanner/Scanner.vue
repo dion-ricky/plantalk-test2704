@@ -214,6 +214,8 @@ export default {
             .then((response) => {
                 const data = response.data[0]
 
+                console.log(data)
+
                 if (data.payload === null || data.payload.length === 0) {
                     throw new Error('Image prediction error');
                 }
@@ -254,8 +256,6 @@ export default {
         predictedUI() {
             const reticle = this.reticleElement.$el;
             reticle.style.opacity = 0;
-            this.
-
             this.togglePredicted(true);
         },
         errorUI() {
