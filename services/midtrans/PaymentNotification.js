@@ -44,6 +44,7 @@ const paymentNotificationHandler = (req, res) => {
     if (!isVerified) {
         console.error('Payment is not verified')
         res.sendStatus(200) // respond midtrans with success, but process the payment further
+        return;
     }
 
     getPaymentStatus(req).then((status) => {
