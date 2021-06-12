@@ -106,6 +106,7 @@ export default {
                 } else {
                     // no data returned
                     // redirect back to market
+                    this.$router.go(-1);
                 }
             })
             .catch((err) => {

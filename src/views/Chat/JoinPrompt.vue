@@ -84,11 +84,8 @@ export default {
     },
     created() {
         const db = PlantalkFirebase.getDb();
-        const auth = PlantalkFirebase.getAuth().auth;
-
-        auth.onAuthStateChanged((user) => {
-            this.user = user;
-        })
+        const auth = PlantalkFirebase.getAuth();
+        this.user = auth.getCurrentUser();
 
         const roomType = this.$route.params.type;
         const roomId = this.$route.params.id;

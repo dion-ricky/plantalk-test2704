@@ -87,11 +87,8 @@ export default {
         }
     },
     created() {
-        const auth = PlantalkFirebase.getAuth().auth;
-
-        auth.onAuthStateChanged((user) => {
-            this.currentUser = user;
-        })
+        const auth = PlantalkFirebase.getAuth();
+        this.currentUser = auth.getCurrentUser()
 
         this.getMessages()
         

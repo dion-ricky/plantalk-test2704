@@ -103,12 +103,9 @@ export default {
         }
     },
     created() {
-        const auth = PlantalkFirebase.getAuth().auth;
+        const auth = PlantalkFirebase.getAuth();
         const db = PlantalkFirebase.getDb();
-
-        auth.onAuthStateChanged((user) => {
-            this.user = user;
-        });
+        this.user = auth.getCurrentUser();
 
         this.getMyCommunity(db);
         this.getAvailableCommunity(db);

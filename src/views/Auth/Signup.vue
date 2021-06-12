@@ -4,7 +4,7 @@
         <div class="auth-form">
             <div class="auth-form-wrapper">
                 <TextInput label="Name" v-model:textInput="name" />
-                <TextInput label="Email" v-model:textInput="email" />
+                <EmailInput label="Email" v-model:emailInput="email" />
                 <PasswordInput label="Password" v-model:passwordInput="password" />
                 <Button text="Create Account" variant="primary" @click="createAccount" />
                 <p class="muted">Already have an account?<br><a @click="$router.push('/login')" class="a-ca">Log in</a></p>
@@ -16,6 +16,7 @@
 <script>
     import PlantalkAuthHeader from "../../components/AuthHeader";
     import TextInput from "../../components/Input/TextInput";
+    import EmailInput from "../../components/Input/EmailInput";
     import PasswordInput from "../../components/Input/PasswordInput";
     import Button from "../../components/Button";
 
@@ -26,6 +27,7 @@
         components: {
             PlantalkAuthHeader,
             TextInput,
+            EmailInput,
             PasswordInput,
             Button
         },
