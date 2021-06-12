@@ -16,9 +16,9 @@ app.post('/', (req, res) => {
     vision.predict();
 })
 
-app.listen(port,() => {
-    console.log('Vision prediction started', port)
-})
+// app.listen(port,() => {
+//     console.log('Vision prediction started', port)
+// })
 
 exports.visionLabeling = app
 
