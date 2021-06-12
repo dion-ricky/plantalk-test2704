@@ -89,7 +89,7 @@ const routes = [
         component: Scanner
     },
     {
-        path: '/app/myplant/detail',
+        path: '/app/myplant/detail/:id',
         name: 'myplantdetail',
         component: MyPlantDetail
     },

@@ -15,7 +15,7 @@
                 :category="plant.category"
                 nextWatering="20 May"
                 needFertilizer="Fertilizer"
-                @click="$router.push({name: 'myplantdetail'})"
+                @click="$router.push({name: 'myplantdetail', params: {id: plant.plant_id}})"
                 />
         </div>
         <floating-action-button iconType="add" />
@@ -51,6 +51,7 @@ export default {
             plants.forEach((v, i) => {
                 this.getPlantInfo(v[1].plant_id)
                 .then((plantInfo) => {
+                    plantInfo.plant_id = v[1].plant_id
                     this.userPlants.push(plantInfo)
                 })
             })
@@ -75,7 +76,7 @@ export default {
     },
     created() {
         const db = PlantalkFirebase.getDb()
-        const auth = PlantalkFirebase.getAuth().auth
+        const auth = PlantalkFirebase.getAuth()
 
         let getOwnedPlant = (uid) => {
             db.ref('users').child(uid).child('owned_plants').once('value')
@@ -89,9 +90,8 @@ export default {
                 })
         }
 
-        auth.onAuthStateChanged((user) => {
-            getOwnedPlant(user.uid)   
-        })
+        const user = auth.getCurrentUser();
+        getOwnedPlant(user.uid)   
 
     }
 }

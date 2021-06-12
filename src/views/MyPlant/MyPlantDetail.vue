@@ -1,32 +1,35 @@
 <template>
     <back-nav />
-    <div class="mpd-head">
-        <div class="header">
-            <h1 class="name">Haworthia Fasciata</h1>
-            <p class="planted-at">Planted - 2 May</p>
-            <p class="category">Indoor Plant</p>
-            <p class="next-watering">Water Every Week</p>
-        </div>
-        <div class="img">
-            <img src="https://firebasestorage.googleapis.com/v0/b/plantalk-test2704.appspot.com/o/market%2Fplant1-ts.png?alt=media&token=78ca3148-4601-4152-a923-8547904b143c" alt="" srcset="">
-        </div>
-    </div>
-    <div class="myplant-detail-wrapper">
-        <h3>Schedule</h3>
-        <weekly-calendar />
-        <monthly-calendar />
-        <div class="legend-wrapper">
-            <div class="lg lg-planted">
-                <div class="cl"></div>
-                <p>Planted</p>
+    <loading-screen v-if="data === null" />
+    <div v-if="data !== null">
+        <div class="mpd-head">
+            <div class="header">
+                <h1 class="name">{{ data.name }}</h1>
+                <p class="planted-at">Planted - 2 May</p>
+                <p class="category">{{ data.category }}</p>
+                <p class="next-watering">Water Every Week</p>
             </div>
-            <div class="lg lg-watered">
-                <div class="cl"></div>
-                <p>Watered</p>
+            <div class="img">
+                <img :src="data.thumbnail" alt="" srcset="">
             </div>
-            <div class="lg lg-fertilized">
-                <div class="cl"></div>
-                <p>Fertilized</p>
+        </div>
+        <div class="myplant-detail-wrapper">
+            <h3>Schedule</h3>
+            <weekly-calendar />
+            <monthly-calendar />
+            <div class="legend-wrapper">
+                <div class="lg lg-planted">
+                    <div class="cl"></div>
+                    <p>Planted</p>
+                </div>
+                <div class="lg lg-watered">
+                    <div class="cl"></div>
+                    <p>Watered</p>
+                </div>
+                <div class="lg lg-fertilized">
+                    <div class="cl"></div>
+                    <p>Fertilized</p>
+                </div>
             </div>
         </div>
     </div>
@@ -36,13 +39,41 @@
 import BackNav from "../../components/Navigation/BackNav"
 import WeeklyCalendar from "../../components/Calendar/WeeklyCalendar"
 import MonthlyCalendar from "../../components/Calendar/MonthlyCalendar"
+import LoadingScreen from "../../components/State/LoadingScreen"
+
+import PlantalkFirebase from "../../firebase"
 
 export default {
     name: "MyPlantDetail",
     components: {
         BackNav,
         WeeklyCalendar,
-        MonthlyCalendar
+        MonthlyCalendar,
+        LoadingScreen
+    },
+    data: () => ({
+        data: null
+    }),
+    created() {
+        // get plant data from db
+        const db = PlantalkFirebase.getDb()
+
+        let plantId = this.$route.params.id
+
+        db.ref('plants').child(plantId).get()
+            .then((s) => {
+                if (s.exists()) {
+                    this.data = s.val()
+                    this.data.key = s.key
+                } else {
+                    // no data returned
+                    // go back
+                    this.$router.go(-1)
+                }
+            })
+            .catch((err) => {
+                console.log(err)
+            })
     }
 }
 </script>
@@ -98,6 +129,8 @@ export default {
 
         img {
             width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
     }
 
