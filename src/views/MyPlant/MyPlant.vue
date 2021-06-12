@@ -46,8 +46,11 @@ export default {
         getUserPlantsInfo(plants) {
             const db = PlantalkFirebase.getDb()
 
+            plants = Object.entries(plants);
+
             plants.forEach((v, i) => {
-                this.getPlantInfo(v).then((plantInfo) => {
+                this.getPlantInfo(v[1].plant_id)
+                .then((plantInfo) => {
                     this.userPlants.push(plantInfo)
                 })
             })
