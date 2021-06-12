@@ -161,7 +161,7 @@ export default {
         classify(currentXY) {
             // capture image and prepare to send to vision api
             const viewport = ScannerUtil.getViewport();
-            const imageWidth = Math.floor((0.7 * viewport[0]))
+            const imageWidth = Math.floor((0.9 * viewport[0]))
             const imageHeight = imageWidth
             const thumbCanvas = this.thumbCanvasRef
             thumbCanvas.width = imageWidth
